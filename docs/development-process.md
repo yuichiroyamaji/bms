@@ -60,6 +60,8 @@ Defines the **tests that prove the requirements** — this is what makes the wor
 - Each test case cites the acceptance criterion it verifies (`Req 1.1`)
 - Covers happy path, edge cases, error handling
 - Includes a coverage check: every acceptance criterion → at least one test case
+- **Follows the domain's `test-plan.md`** (`frontend`/`backend`/`infra`) for tooling, test
+  types, file locations, and coverage — each domain tests differently
 
 > **Gate 3:** human approves the test cases before planning implementation.
 

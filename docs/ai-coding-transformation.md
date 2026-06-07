@@ -78,6 +78,11 @@ Added TDD on top of SDD. The spec set for one unit of work is now **four** docum
 3. **Propagated everywhere:** spec/epic issue template (added Test-cases gate), `tasks.md`
    template (tasks cite test ids), `/new-feature` command (scaffolds all 4 files), root +
    frontend `CLAUDE.md`, `structure.md` map, and a new `phase:test-cases` GitHub label.
+4. **Per-domain test plans:** added `test-plan.md` to `frontend/`, `backend/`, and `infra/`
+   docs — each defines that domain's distinct testing strategy (frontend: Jest/RTL/Playwright;
+   backend: Lambda event-in/result-out; infra: CDK assertions + snapshots). Every
+   `test-cases.md` must follow its domain's `test-plan.md`. Noted that frontend test tooling is
+   not yet installed (despite `tech-stack.md`) — setup is a prerequisite task.
 
 ## Next Agenda
 
