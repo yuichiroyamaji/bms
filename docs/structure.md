@@ -46,6 +46,7 @@ frontend/
 ├── docs/
 │   ├── conventions.md             # coding conventions (canonical)
 │   ├── structure.md               # frontend src/ layout
+│   ├── test-plan.md               # frontend testing strategy (Jest/RTL/Playwright)
 │   ├── nextjs/{app-router,server-actions}.md
 │   ├── lib-setup/{biome,jest,pino,prisma}.md
 │   └── ui-template/tailadmin-readme.md
@@ -57,13 +58,15 @@ infra/
 └── docs/
     ├── deployment.md              # current OpenNext deploy guide
     ├── migration-plan.md          # AppRunner → OpenNext history
+    ├── test-plan.md               # infra testing strategy (CDK assertions + snapshots)
     ├── aws-infrastructure-diagram.md
     ├── assets/aws_diagram.drawio
     └── _archive-apprunner/        # retired AppRunner docs (obsolete; do not follow)
 
 backend/
 ├── CLAUDE.md
-└── docs/                          # backend docs (grows with the codebase)
+└── docs/
+    └── test-plan.md               # backend testing strategy (Lambda; starter policy)
 ```
 
 ## Domain structure details

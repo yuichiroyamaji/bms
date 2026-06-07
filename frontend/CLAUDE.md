@@ -12,6 +12,7 @@ Deeper references:
 - Server Actions: `docs/nextjs/server-actions.md`
 - Library setup: `docs/lib-setup/` (biome, jest, pino, prisma)
 - UI template: `docs/ui-template/tailadmin-readme.md`
+- Testing strategy: `docs/test-plan.md` (how we test the frontend; `test-cases.md` follows it)
 
 Feature specs live next to the feature, e.g. `src/features/engineers/docs/` →
 `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.

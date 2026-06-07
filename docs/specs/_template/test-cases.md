@@ -5,8 +5,10 @@
 > Requires **Gate 2** (design) approved. Get **Gate 3** approval before planning tasks.
 
 Each test case maps to acceptance criteria in `requirements.md`. Cover the happy path,
-edge cases, and error handling. During implementation these become the actual automated tests
-(Jest for units, Playwright for E2E) — write them first and watch them fail before coding.
+edge cases, and error handling. **Follow your domain's `test-plan.md`** — e.g.
+`frontend/docs/test-plan.md`, `backend/docs/test-plan.md`, or `infra/docs/test-plan.md` — for
+the tooling, test types, file locations, and coverage conventions. During implementation these
+become the actual automated tests — write them first and watch them fail (TDD).
 
 ## Unit / component tests
 
