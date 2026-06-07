@@ -1,5 +1,5 @@
 ---
-description: Scaffold a new SDD spec (requirements/design/tasks) and open its Spec/Epic issue, then start Phase 1
+description: Scaffold a new SDD spec (requirements/design/test-cases/tasks) and open its Spec/Epic issue, then start Phase 1
 argument-hint: <feature-name> [frontend|backend|infra|cross-cutting]
 allowed-tools: Bash(mkdir:*), Bash(cp:*), Bash(ls:*), Bash(gh issue create:*), Bash(gh label list:*), Read, Write, Edit
 ---
@@ -27,8 +27,9 @@ Feature / initiative: **$ARGUMENTS**
    - Otherwise:
      ```
      mkdir -p <spec-path>
-     cp docs/specs/_template/requirements.md docs/specs/_template/design.md docs/specs/_template/tasks.md <spec-path>/
+     cp docs/specs/_template/*.md <spec-path>/
      ```
+     This copies the full spec set: `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
 
 3. **Open the Spec / Epic issue.**
    - Run `gh label list` to confirm labels exist (`spec`, `phase:requirements`).
@@ -42,7 +43,8 @@ Feature / initiative: **$ARGUMENTS**
      ```
      - [ ] Gate 1 — Requirements approved (requirements.md)
      - [ ] Gate 2 — Design approved (design.md)
-     - [ ] Gate 3 — Tasks approved (tasks.md)
+     - [ ] Gate 3 — Test cases approved (test-cases.md)
+     - [ ] Gate 4 — Tasks approved (tasks.md)
      - [ ] Implementation complete
      ```
    - Report the created issue number and URL.

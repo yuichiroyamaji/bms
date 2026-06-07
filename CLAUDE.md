@@ -25,15 +25,16 @@ Full-stack admin dashboard. Monorepo with three deployable domains: `frontend/` 
 Docs live at the **narrowest scope that fully contains their subject**:
 - Project-wide → `docs/`
 - One domain → `<domain>/docs/`
-- One feature → `<domain>/src/features/<feature>/docs/` (files: `requirements.md`, `design.md`, `tasks.md`)
+- One feature → `<domain>/src/features/<feature>/docs/` (files: `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`)
 
 When you change structure, conventions, or deployment, update the matching doc in the same change.
 
 ## Rules of engagement
 
-- Follow **Spec-Driven Development** (see `docs/development-process.md`): for non-trivial work,
-  draft `requirements.md` → `design.md` → `tasks.md` and **stop for approval at each gate**
-  before moving on. Don't jump straight to code.
+- Follow **Spec-Driven + Test-Driven Development** (see `docs/development-process.md`): for
+  non-trivial work, draft `requirements.md` → `design.md` → `test-cases.md` → `tasks.md`,
+  **stopping for approval at each gate**. Then implement **test-first** (red → green →
+  refactor). Don't jump straight to code.
 - Hosting is **OpenNext (CloudFront + Lambda + S3)**, not AppRunner. Anything under
   `infra/docs/_archive-apprunner/` is obsolete — do not follow it.
 - Run lint + typecheck (and tests where they exist) before considering a change done.
