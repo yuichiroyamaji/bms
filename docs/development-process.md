@@ -8,12 +8,13 @@ phase begins. This keeps AI-written code aligned with intent and verifiable.
 ## TL;DR
 
 ```
-Idea ─▶ Issue ─▶ requirements.md ─▶ design.md ─▶ test-cases.md ─▶ tasks.md ─▶ code ─▶ merge
-                  └─ GATE 1 ──┘    └ GATE 2 ┘   └─ GATE 3 ──┘    └ GATE 4 ┘   TDD: red→green→refactor
+Idea ─▶ requirements.md ─▶ design.md ─▶ test-cases.md ─▶ tasks.md ─▶ Issue + branch ─▶ code ─▶ merge
+         └─ GATE 1 ──┘    └ GATE 2 ┘   └─ GATE 3 ──┘    └ GATE 4 ┘   (after all 4 approved)   TDD: red→green→refactor
 ```
 
 - Spec + test cases live **in the repo**, next to the code they describe.
-- **GitHub Issues** track execution (epic + sub-issues).
+- The **GitHub Issue + implementation branch are created after Gate 4** (all 4 docs approved),
+  then implementation happens on that branch.
 - **Notion** tracks portfolio/roadmap only — not individual work items.
 
 ## The unit of work: 4 documents
@@ -39,7 +40,9 @@ The AI **stops at each gate** and waits for explicit approval. It does not skip 
 ## The phases
 
 ### Phase 0 — Intake
-A need is captured as a **GitHub Issue** (Feature Request or Bug). The "ask"; no solution yet.
+A need/idea is captured (informally, or as a Feature Request / Bug). The "ask"; no solution yet.
+The formal tracking **issue and implementation branch are created later, after Gate 4** — the
+spec phase (Gates 1–4) happens in the repo first. (Bugs may still open a `bug` issue immediately.)
 
 ### Phase 1 — Requirements → `requirements.md`  ·  **GATE 1**
 Defines **WHAT & WHY** with EARS acceptance criteria.
@@ -78,8 +81,9 @@ For each task, follow **red → green → refactor**:
 2. **Green** — write the minimum code to make them pass.
 3. **Refactor** — clean up with tests staying green.
 
-One task → one branch → one PR (GitFlow, see [`git-flow.md`](./git-flow.md)). PR references the
-spec and `Closes #<issue>`. Tests live with the code (Jest units, Playwright E2E).
+Work happens on the implementation branch created after Gate 4
+(`feature/#<issue>_<slug>`, off `develop` — see GitHub mapping). PRs reference the spec and the
+issue; tests live with the code (Jest units, Playwright E2E).
 
 ### Phase 6 — Verify & Done
 PR reviewed and merged; issue auto-closes; `tasks.md` checkbox ticked; epic updates. Specs and
@@ -111,7 +115,8 @@ Phase labels track progress: `phase:requirements`, `phase:design`, `phase:test-c
 `phase:tasks`, `phase:implementation`.
 
 **Branch & PR conventions**
-- Branch: `feature/<issue#>-<short-slug>` (or `fix/<issue#>-…`), per GitFlow
+- Branch (created after Gate 4, off `develop`): `feature/#<issue>_<slug>` (or `fix/#<issue>_<slug>`).
+  Quote it in shell commands because of the `#`, e.g. `git checkout -b "feature/#4_new-feature-commands" develop`.
 - PR body links the spec and `Closes #<issue>`; closing sub-issues updates the epic checklist
 
 ## Authority — who owns what (avoids triple-tracking)

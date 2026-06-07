@@ -1,3 +1,8 @@
+## Inbox
+- [ ] Decide how to link **GitHub issues ↔ `tasks.md` ↔ Notion tasks** (added 2026-06-07).
+  - Open questions: issue granularity (parked); whether tasks become GitHub sub-issues; how/whether Notion mirrors GitHub; single source of truth per layer.
+  - When decided, reconcile: `docs/development-process.md` (GitHub mapping), `.github/ISSUE_TEMPLATE/spec.yml`, the `phase:*` labels, and the `/new-feature` flow.
+
 ## プロジェクト設定
 ※Coding Ruleを書きながら進める
 - Prismaで生SQLを扱える「TypedSQL」の設定、実装
