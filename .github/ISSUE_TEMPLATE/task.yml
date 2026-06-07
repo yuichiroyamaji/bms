@@ -1,0 +1,49 @@
+name: ✅ Implementation Task
+description: A single implementation task from a spec's tasks.md (sub-issue of a Spec/Epic)
+labels: ["task", "phase:implementation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One unit of implementation work. Should be small enough to land in a single PR.
+        See `docs/development-process.md`.
+
+  - type: input
+    id: epic
+    attributes:
+      label: ◆ Parent Spec / Epic
+      description: The Spec issue this task belongs to
+      placeholder: "#__"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: ◆ Task
+      description: What needs to be done?
+      placeholder: Implement the engineers list Server Action and wire it to the list component.
+    validations:
+      required: true
+
+  - type: input
+    id: requirements
+    attributes:
+      label: ◆ Requirement id(s)
+      description: Which acceptance criteria this task satisfies
+      placeholder: Req 1.1, 1.4
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: ◆ Definition of done
+      description: How we know this task is complete
+      value: |
+        - [ ] Implements the cited requirement(s)
+        - [ ] Lint + typecheck pass
+        - [ ] Tests added/updated where applicable
+        - [ ] PR opened referencing the spec and `Closes` this issue
+    validations:
+      required: true

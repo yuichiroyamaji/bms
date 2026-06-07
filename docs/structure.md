@@ -22,7 +22,7 @@ Docs live at the **narrowest scope that fully contains their subject**:
 
 Each domain has its own `CLAUDE.md` that Claude Code auto-loads when working in that
 subtree; it imports the relevant docs. Feature specs use the filenames
-`requirement.md`, `design.md`, `task.md`.
+`requirements.md`, `design.md`, `tasks.md`.
 
 ## Documentation map
 
@@ -32,9 +32,13 @@ docs/                              # PROJECT-WIDE
 ├── product.md                     # what the product is
 ├── tech-stack.md                  # stack, hosting rationale, dev tools, install notes
 ├── structure.md                   # this file: repo layout + doc policy + this map
+├── development-process.md         # Spec-Driven Development workflow (phases, gates, GitHub mapping)
 ├── git-flow.md                    # branching strategy
 ├── todo.md                        # project backlog
 ├── ai-coding-transformation.md    # record of the AI-coding conversion + next agenda
+├── specs/                         # cross-cutting (multi-domain) specs
+│   ├── _template/                 # requirements/design/tasks skeletons to copy
+│   └── <initiative>/{requirements,design,tasks}.md
 └── assets/                        # diagrams & images (requirements.drawio, images/)
 
 frontend/
@@ -46,7 +50,7 @@ frontend/
 │   ├── lib-setup/{biome,jest,pino,prisma}.md
 │   └── ui-template/tailadmin-readme.md
 └── src/features/<feature>/docs/   # FEATURE scope
-    └── requirement.md  design.md  task.md
+    └── requirements.md  design.md  tasks.md
 
 infra/
 ├── CLAUDE.md                      # cdk / OpenNext commands + layout

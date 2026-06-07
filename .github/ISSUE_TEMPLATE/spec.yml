@@ -1,0 +1,59 @@
+name: 📋 Spec / Epic
+description: Track a feature or initiative through Spec-Driven Development (requirements → design → tasks → implementation)
+labels: ["spec", "phase:requirements"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Umbrella issue for one feature/initiative. The spec docs live in the repo; this issue
+        tracks the gates and links them. See `docs/development-process.md`.
+
+  - type: input
+    id: spec-location
+    attributes:
+      label: ◆ Spec location
+      description: Path to the spec folder in the repo
+      placeholder: frontend/src/features/<feature>/docs/  (or docs/specs/<initiative>/)
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: ◆ Summary
+      description: What is this feature/initiative and why does it matter?
+      placeholder: One short paragraph — the WHAT and WHY.
+    validations:
+      required: true
+
+  - type: textarea
+    id: gates
+    attributes:
+      label: ◆ Phase gates
+      description: Check off each gate as it is approved. Link the doc when it exists.
+      value: |
+        - [ ] **Gate 1 — Requirements approved** (`requirements.md`)
+        - [ ] **Gate 2 — Design approved** (`design.md`)
+        - [ ] **Gate 3 — Tasks approved** (`tasks.md`)
+        - [ ] **Implementation complete** (all task sub-issues closed)
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: ◆ Task sub-issues
+      description: Link substantial tasks created from tasks.md (small ones stay as checkboxes in tasks.md).
+      placeholder: |
+        - [ ] #__ task ...
+        - [ ] #__ task ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: ◆ Notes
+      description: Dependencies, risks, decisions, links.
+    validations:
+      required: false
