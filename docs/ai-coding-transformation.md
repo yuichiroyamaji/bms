@@ -85,13 +85,12 @@ Tracked roadmap. Items are independent unless noted.
 - Add a Claude Code post-edit hook that runs Biome (format + lint) and `tsc --noEmit` on
   changed frontend files, so the agent catches its own type/lint errors automatically.
 
-### E. Spec-driven workflow  _(was suggestion #5 — mostly done in Phase 2)_
+### E. Spec-driven workflow  _(was suggestion #5 — DONE)_
 - ✅ Process defined (`development-process.md`), plural naming ruled, spec templates added,
   GitHub Spec/Task/PR templates added.
-- ⬜ Remaining: add a `/new-feature` slash command in `.claude/commands/` that scaffolds the
-  spec from `docs/specs/_template/` and opens the Spec (epic) issue — making spec-first the
-  default, one-step path.
-- ⬜ Create the GitHub labels (`spec`, `task`, `phase:*`) — needs `gh` installed or the web UI.
+- ✅ GitHub labels created (`spec`, `task`, `phase:requirements|design|tasks|implementation`).
+- ✅ `/new-feature` slash command (`.claude/commands/new-feature.md`) scaffolds the spec from
+  `docs/specs/_template/`, opens the Spec (epic) issue, and starts Phase 1 — stopping at Gate 1.
 
 ## References
 
