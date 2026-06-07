@@ -34,7 +34,8 @@ body:
       value: |
         - [ ] **Gate 1 — Requirements approved** (`requirements.md`)
         - [ ] **Gate 2 — Design approved** (`design.md`)
-        - [ ] **Gate 3 — Tasks approved** (`tasks.md`)
+        - [ ] **Gate 3 — Test cases approved** (`test-cases.md`)
+        - [ ] **Gate 4 — Tasks approved** (`tasks.md`)
         - [ ] **Implementation complete** (all task sub-issues closed)
     validations:
       required: true

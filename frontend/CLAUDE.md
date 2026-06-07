@@ -14,7 +14,7 @@ Deeper references:
 - UI template: `docs/ui-template/tailadmin-readme.md`
 
 Feature specs live next to the feature, e.g. `src/features/engineers/docs/` →
-`requirements.md`, `design.md`, `tasks.md`.
+`requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
 
 ## Commands (run from `frontend/`)
 

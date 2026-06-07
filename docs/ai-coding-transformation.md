@@ -64,6 +64,21 @@ substantial tasks); **Notion = portfolio/roadmap only** (GitHub Issues own work 
 5. **Wired it in:** root `CLAUDE.md` now `@import`s the process and includes an SDD rule of
    engagement.
 
+## What was done (Phase 3 — Test-Driven Development)
+
+Added TDD on top of SDD. The spec set for one unit of work is now **four** documents:
+`requirements.md` → `design.md` → `test-cases.md` → `tasks.md`.
+
+1. **New artifact `test-cases.md`** (named for kebab-case consistency): tests written as
+   Given/When/Then, each mapped to an acceptance criterion, with a coverage check. Added to the
+   template (`docs/specs/_template/`) and to the existing engineers spec.
+2. **Process updated** (`development-process.md`): test cases are **Phase 3 / Gate 3** (tasks
+   move to Gate 4); implementation now follows the **red → green → refactor** TDD loop driven by
+   `test-cases.md`.
+3. **Propagated everywhere:** spec/epic issue template (added Test-cases gate), `tasks.md`
+   template (tasks cite test ids), `/new-feature` command (scaffolds all 4 files), root +
+   frontend `CLAUDE.md`, `structure.md` map, and a new `phase:test-cases` GitHub label.
+
 ## Next Agenda
 
 Tracked roadmap. Items are independent unless noted.
