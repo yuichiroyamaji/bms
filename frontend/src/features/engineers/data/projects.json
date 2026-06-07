@@ -1,0 +1,92 @@
+[
+  {
+    "id": "p1",
+    "name": "E-commerce Platform",
+    "description": "Full-stack e-commerce solution with React and Node.js",
+    "technologies": ["React", "Node.js", "PostgreSQL", "Redis"],
+    "startDate": "2023-01-15",
+    "endDate": "2023-08-30",
+    "status": "Completed"
+  },
+  {
+    "id": "p2",
+    "name": "Analytics Dashboard", 
+    "description": "Real-time analytics dashboard for business metrics",
+    "technologies": ["React", "TypeScript", "D3.js", "Express"],
+    "startDate": "2022-06-01",
+    "endDate": "2022-12-15",
+    "status": "Completed"
+  },
+  {
+    "id": "p3",
+    "name": "Corporate Website",
+    "description": "Modern corporate website with CMS integration",
+    "technologies": ["Vue.js", "Nuxt.js", "Strapi", "Tailwind CSS"],
+    "startDate": "2023-03-01",
+    "endDate": "2023-07-15",
+    "status": "Completed"
+  },
+  {
+    "id": "p4",
+    "name": "Design System",
+    "description": "Component library and design system",
+    "technologies": ["React", "Storybook", "Styled Components"],
+    "startDate": "2022-09-01",
+    "endDate": "2023-02-28",
+    "status": "Completed"
+  },
+  {
+    "id": "p5",
+    "name": "Payment Processing System",
+    "description": "Secure payment processing microservice",
+    "technologies": ["Python", "Django", "PostgreSQL", "Celery"],
+    "startDate": "2023-05-01",
+    "endDate": "2023-11-30",
+    "status": "Completed"
+  },
+  {
+    "id": "cp1",
+    "name": "Mobile App Redesign",
+    "description": "Complete redesign of mobile application",
+    "technologies": ["React Native", "TypeScript"],
+    "startDate": "2024-01-15",
+    "endDate": "2024-06-30",
+    "status": "In Progress"
+  },
+  {
+    "id": "cp2",
+    "name": "API Migration",
+    "description": "Migrate legacy APIs to new architecture",
+    "technologies": ["Node.js", "TypeScript", "Docker"],
+    "startDate": "2024-03-01",
+    "endDate": "2024-05-15",
+    "status": "In Progress"
+  },
+  {
+    "id": "cp3",
+    "name": "User Dashboard",
+    "description": "New user dashboard with improved UX",
+    "technologies": ["React", "TypeScript", "Tailwind CSS"],
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-31",
+    "status": "In Progress"
+  },
+  {
+    "id": "cp4",
+    "name": "Microservices Migration",
+    "description": "Migrate monolith to microservices architecture",
+    "technologies": ["Python", "FastAPI", "Docker", "Kubernetes"],
+    "startDate": "2024-01-01",
+    "endDate": "2024-08-31",
+    "status": "In Progress"
+  },
+  {
+    "id": "cp8",
+    "name": "Social Media App",
+    "description": "New social media platform for mobile",
+    "technologies": ["React Native", "TypeScript", "GraphQL"],
+    "startDate": "2024-02-15",
+    "endDate": "2024-10-31",
+    "status": "In Progress"
+  }
+]

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Support
+    url: https://github.com/habitat-hub/board-game-prototype/discussions
+    about: For questions and support other than bug reports or feature requests, please use Discussions.

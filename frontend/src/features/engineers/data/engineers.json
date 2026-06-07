@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "name": "Sarah Chen",
+    "email": "sarah.chen@company.com",
+    "profilePhoto": "engineer-1.svg",
+    "position": "Senior Full Stack Developer",
+    "department": "Engineering"
+  },
+  {
+    "id": "2", 
+    "name": "Marcus Rodriguez",
+    "email": "marcus.rodriguez@company.com",
+    "profilePhoto": "engineer-2.svg",
+    "position": "Frontend Developer",
+    "department": "Engineering"
+  },
+  {
+    "id": "3",
+    "name": "Aisha Patel",
+    "email": "aisha.patel@company.com", 
+    "profilePhoto": "engineer-3.svg",
+    "position": "Backend Developer",
+    "department": "Engineering"
+  },
+  {
+    "id": "4",
+    "name": "David Kim",
+    "email": "david.kim@company.com",
+    "profilePhoto": "engineer-4.svg",
+    "position": "DevOps Engineer",
+    "department": "Engineering"
+  },
+  {
+    "id": "5",
+    "name": "Emma Thompson",
+    "email": "emma.thompson@company.com",
+    "profilePhoto": "engineer-5.svg",
+    "position": "Mobile Developer",
+    "department": "Engineering"
+  }
+]

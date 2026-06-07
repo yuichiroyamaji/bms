@@ -1,0 +1,182 @@
+name: Deploy to AWS AppRunner
+
+# This workflow deploys your application to AWS AppRunner
+#
+# Setup required:
+# 1. Deploy InfraStack: npx cdk deploy InfraStack-dev -c environment=dev
+# 2. Deploy AppStack-dev: npm run deploy:dev
+# 3. Add GitHub secrets: AWS_ROLE_ARN and AWS_REGION
+# 4. (Optional) Deploy AppStack-prod: npm run deploy:prod
+# 5. (Optional) Uncomment 'main' branch below to enable prod auto-deploy
+
+on:
+  push:
+    branches:
+      - develop  # Auto-deploy dev environment
+      # Uncomment the line below to enable auto-deploy to production
+      # - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy:
+    name: Deploy to AppRunner
+    runs-on: ubuntu-latest
+
+    # Use GitHub Environments for production approval
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      url: ${{ steps.deployment.outputs.service_url }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            frontend/package-lock.json
+            infra/package-lock.json
+
+      - name: Debug GitHub context
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Role ARN: ${{ secrets.AWS_ROLE_ARN }}"
+          echo "Region: ${{ secrets.AWS_REGION }}"
+
+      - name: Debug OIDC token
+        run: |
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${ACTIONS_ID_TOKEN_REQUEST_TOKEN:0:20}..."
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+
+      - name: Debug OIDC Token (temporary)
+        if: always()
+        run: |
+          echo "Checking OIDC token subject claim..."
+
+          # Check if OIDC variables are available
+          if [ -z "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ] || [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+            echo "⚠️  OIDC environment variables not available"
+            echo "This is normal - OIDC token is only available when id-token: write permission is set"
+            exit 0
+          fi
+
+          # Request OIDC token
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" 2>&1)
+
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d: -f2)
+          BODY=$(echo "$RESPONSE" | sed '/HTTP_CODE:/d')
+
+          echo "HTTP Status: ${HTTP_CODE:-unknown}"
+
+          # Try to parse JSON response
+          if echo "$BODY" | jq -e . >/dev/null 2>&1; then
+            TOKEN=$(echo "$BODY" | jq -r '.value // empty' 2>/dev/null)
+            if [ -n "$TOKEN" ] && [ "$TOKEN" != "null" ] && [ "$TOKEN" != "" ]; then
+              # Decode JWT payload (second part)
+              PAYLOAD=$(echo "$TOKEN" | cut -d'.' -f2)
+              if [ -n "$PAYLOAD" ]; then
+                # Base64 decode (add padding if needed)
+                PAYLOAD_PADDED=$(echo "$PAYLOAD" | sed 's/-/+/g; s/_/\//g')
+                case $((${#PAYLOAD_PADDED} % 4)) in
+                  2) PAYLOAD_PADDED="${PAYLOAD_PADDED}==" ;;
+                  3) PAYLOAD_PADDED="${PAYLOAD_PADDED}=" ;;
+                esac
+                DECODED=$(echo "$PAYLOAD_PADDED" | base64 -d 2>/dev/null || echo "")
+                if [ -n "$DECODED" ]; then
+                  SUB=$(echo "$DECODED" | jq -r '.sub // "NOT_FOUND"' 2>/dev/null || echo "Could not parse")
+                  echo "✅ OIDC Token Subject (sub): $SUB"
+                  echo "Expected format: repo:yuichiroyamaji/serverless-admin-template:*"
+                else
+                  echo "⚠️  Could not decode token payload"
+                fi
+              fi
+            else
+              echo "⚠️  Token value not found in response"
+              echo "Response preview: ${BODY:0:200}"
+            fi
+          else
+            echo "⚠️  Invalid JSON response"
+            echo "Response: ${BODY:0:500}"
+          fi
+
+      - name: Determine environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: GitHubActions
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Install infrastructure dependencies
+        working-directory: infra
+        run: npm ci
+
+      - name: Build infrastructure
+        working-directory: infra
+        run: npm run build
+
+      - name: CDK Diff
+        working-directory: infra
+        run: npx cdk diff AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }}
+
+      - name: Deploy to AWS
+        working-directory: infra
+        run: npx cdk deploy AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }} --require-approval never
+
+      - name: Get deployment info
+        id: deployment
+        working-directory: infra
+        run: |
+          SERVICE_URL=$(aws cloudformation describe-stacks \
+            --stack-name admin-app-${{ steps.env.outputs.environment }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`ServiceUrl`].OutputValue' \
+            --output text)
+          echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Successful! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ steps.env.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Service URL:** ${{ steps.deployment.outputs.service_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployed at:** $(date)" >> $GITHUB_STEP_SUMMARY

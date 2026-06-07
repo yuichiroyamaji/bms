@@ -1,0 +1,107 @@
+[
+  {
+    "language": "JavaScript",
+    "category": "Frontend",
+    "description": "Dynamic programming language for web development"
+  },
+  {
+    "language": "TypeScript",
+    "category": "Frontend",
+    "description": "Typed superset of JavaScript"
+  },
+  {
+    "language": "React",
+    "category": "Frontend",
+    "description": "JavaScript library for building user interfaces"
+  },
+  {
+    "language": "Vue.js",
+    "category": "Frontend", 
+    "description": "Progressive JavaScript framework"
+  },
+  {
+    "language": "React Native",
+    "category": "Mobile",
+    "description": "Framework for building native mobile apps"
+  },
+  {
+    "language": "Swift",
+    "category": "Mobile",
+    "description": "Programming language for iOS development"
+  },
+  {
+    "language": "Kotlin",
+    "category": "Mobile",
+    "description": "Programming language for Android development"
+  },
+  {
+    "language": "Python",
+    "category": "Backend",
+    "description": "High-level programming language"
+  },
+  {
+    "language": "Node.js",
+    "category": "Backend",
+    "description": "JavaScript runtime for server-side development"
+  },
+  {
+    "language": "Django",
+    "category": "Backend",
+    "description": "Python web framework"
+  },
+  {
+    "language": "FastAPI",
+    "category": "Backend",
+    "description": "Modern Python web framework"
+  },
+  {
+    "language": "PostgreSQL",
+    "category": "Database",
+    "description": "Advanced open source relational database"
+  },
+  {
+    "language": "MongoDB",
+    "category": "Database",
+    "description": "NoSQL document database"
+  },
+  {
+    "language": "Redis",
+    "category": "Database",
+    "description": "In-memory data structure store"
+  },
+  {
+    "language": "Docker",
+    "category": "DevOps",
+    "description": "Containerization platform"
+  },
+  {
+    "language": "Kubernetes",
+    "category": "DevOps",
+    "description": "Container orchestration platform"
+  },
+  {
+    "language": "AWS",
+    "category": "DevOps",
+    "description": "Amazon Web Services cloud platform"
+  },
+  {
+    "language": "Terraform",
+    "category": "DevOps",
+    "description": "Infrastructure as code tool"
+  },
+  {
+    "language": "CSS",
+    "category": "Frontend",
+    "description": "Cascading Style Sheets for styling"
+  },
+  {
+    "language": "Sass",
+    "category": "Frontend",
+    "description": "CSS preprocessor"
+  },
+  {
+    "language": "Bash",
+    "category": "DevOps",
+    "description": "Unix shell and command language"
+  }
+]

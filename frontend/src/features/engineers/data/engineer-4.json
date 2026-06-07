@@ -1,0 +1,121 @@
+{
+  "id": "4",
+  "name": "David Kim",
+  "email": "david.kim@company.com",
+  "profilePhoto": "engineer-4.svg",
+  "position": "DevOps Engineer",
+  "department": "Engineering",
+  "skills": [
+    {
+      "language": "AWS",
+      "experienceYears": 4,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Docker",
+      "experienceYears": 5,
+      "proficiencyLevel": "Expert"
+    },
+    {
+      "language": "Kubernetes",
+      "experienceYears": 3,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Terraform",
+      "experienceYears": 3,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Python",
+      "experienceYears": 4,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Bash",
+      "experienceYears": 6,
+      "proficiencyLevel": "Expert"
+    }
+  ],
+  "previousProjects": [
+    {
+      "id": "p7",
+      "name": "CI/CD Pipeline",
+      "description": "Automated deployment pipeline for all services",
+      "technologies": ["Jenkins", "Docker", "Kubernetes", "AWS"],
+      "startDate": "2023-02-01",
+      "endDate": "2023-09-15",
+      "role": "DevOps Lead",
+      "status": "Completed"
+    },
+    {
+      "id": "p8",
+      "name": "Infrastructure as Code",
+      "description": "Terraform-based infrastructure management",
+      "technologies": ["Terraform", "AWS", "CloudFormation"],
+      "startDate": "2022-10-01",
+      "endDate": "2023-01-31",
+      "role": "Infrastructure Engineer",
+      "status": "Completed"
+    }
+  ],
+  "currentAssignments": [
+    {
+      "id": "a6",
+      "project": {
+        "id": "cp6",
+        "name": "Cloud Migration",
+        "description": "Migrate on-premise infrastructure to AWS",
+        "technologies": ["AWS", "Terraform", "Docker", "Kubernetes"],
+        "startDate": "2026-02-20",
+        "endDate": "2026-10-05",
+        "role": "Cloud Architect",
+        "status": "In Progress"
+      },
+      "startDate": "2026-02-20",
+      "endDate": "2026-10-05",
+      "allocation": 60,
+      "status": "Active"
+    },
+    {
+      "id": "a7",
+      "project": {
+        "id": "cp7",
+        "name": "Security Hardening",
+        "description": "Implement security best practices across infrastructure",
+        "technologies": ["AWS Security", "Terraform", "Vault"],
+        "startDate": "2026-05-01",
+        "endDate": "2026-08-20",
+        "role": "Security Engineer",
+        "status": "In Progress"
+      },
+      "startDate": "2026-05-01",
+      "endDate": "2026-08-20",
+      "allocation": 40,
+      "status": "Active"
+    }
+  ],
+  "rating": {
+    "averageRating": 4.8,
+    "totalReviews": 10,
+    "reviews": [
+      {
+        "id": "r8",
+        "reviewerName": "Jennifer Lee",
+        "rating": 5,
+        "comment": "Outstanding DevOps expertise. Infrastructure deployments are always smooth.",
+        "commentJa": "卓越したDevOpsの専門知識。インフラのデプロイメントは常にスムーズです。",
+        "date": "2024-01-20",
+        "projectId": "p7"
+      },
+      {
+        "id": "r9",
+        "reviewerName": "Robert Kim",
+        "rating": 5,
+        "comment": "Best cloud architect I've worked with. Highly recommended.",
+        "commentJa": "一緒に働いた中で最高のクラウドアーキテクト。強くお勧めします。",
+        "date": "2023-11-30"
+      }
+    ]
+  }
+}

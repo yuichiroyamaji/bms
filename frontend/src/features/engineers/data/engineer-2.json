@@ -1,0 +1,99 @@
+{
+  "id": "2",
+  "name": "Marcus Rodriguez",
+  "email": "marcus.rodriguez@company.com",
+  "profilePhoto": "engineer-2.svg",
+  "position": "Frontend Developer",
+  "department": "Engineering",
+  "skills": [
+    {
+      "language": "JavaScript",
+      "experienceYears": 4,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "React",
+      "experienceYears": 3,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Vue.js",
+      "experienceYears": 2,
+      "proficiencyLevel": "Intermediate"
+    },
+    {
+      "language": "CSS",
+      "experienceYears": 5,
+      "proficiencyLevel": "Expert"
+    },
+    {
+      "language": "Sass",
+      "experienceYears": 3,
+      "proficiencyLevel": "Advanced"
+    }
+  ],
+  "previousProjects": [
+    {
+      "id": "p3",
+      "name": "Corporate Website",
+      "description": "Modern corporate website with CMS integration",
+      "technologies": ["Vue.js", "Nuxt.js", "Strapi", "Tailwind CSS"],
+      "startDate": "2023-03-01",
+      "endDate": "2023-07-15",
+      "role": "Frontend Developer",
+      "status": "Completed"
+    },
+    {
+      "id": "p4",
+      "name": "Design System",
+      "description": "Component library and design system",
+      "technologies": ["React", "Storybook", "Styled Components"],
+      "startDate": "2022-09-01",
+      "endDate": "2023-02-28",
+      "role": "UI Developer",
+      "status": "Completed"
+    }
+  ],
+  "currentAssignments": [
+    {
+      "id": "a3",
+      "project": {
+        "id": "cp3",
+        "name": "User Dashboard",
+        "description": "New user dashboard with improved UX",
+        "technologies": ["React", "TypeScript", "Tailwind CSS"],
+        "startDate": "2026-02-05",
+        "endDate": "2026-08-15",
+        "role": "Frontend Developer",
+        "status": "In Progress"
+      },
+      "startDate": "2026-02-05",
+      "endDate": "2026-08-15",
+      "allocation": 100,
+      "status": "Active"
+    }
+  ],
+  "rating": {
+    "averageRating": 4.2,
+    "totalReviews": 8,
+    "reviews": [
+      {
+        "id": "r4",
+        "reviewerName": "Sarah Johnson",
+        "rating": 4,
+        "comment": "Great UI/UX skills and attention to detail.",
+        "commentJa": "優れたUI/UXスキルと細部への配慮。",
+        "date": "2024-01-10"
+      },
+      {
+        "id": "r5",
+        "reviewerName": "Mike Chen",
+        "rating": 5,
+        "comment": "Excellent CSS and design implementation.",
+        "commentJa": "優れたCSSとデザイン実装。",
+        "date": "2023-11-15",
+        "projectId": "p3"
+      }
+    ]
+  }
+}

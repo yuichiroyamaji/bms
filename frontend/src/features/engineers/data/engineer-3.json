@@ -1,0 +1,116 @@
+{
+  "id": "3",
+  "name": "Aisha Patel",
+  "email": "aisha.patel@company.com",
+  "profilePhoto": "engineer-3.svg",
+  "position": "Backend Developer",
+  "department": "Engineering",
+  "skills": [
+    {
+      "language": "Python",
+      "experienceYears": 5,
+      "proficiencyLevel": "Expert"
+    },
+    {
+      "language": "Django",
+      "experienceYears": 4,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "PostgreSQL",
+      "experienceYears": 4,
+      "proficiencyLevel": "Advanced"
+    },
+    {
+      "language": "Redis",
+      "experienceYears": 2,
+      "proficiencyLevel": "Intermediate"
+    },
+    {
+      "language": "Docker",
+      "experienceYears": 3,
+      "proficiencyLevel": "Advanced"
+    }
+  ],
+  "previousProjects": [
+    {
+      "id": "p5",
+      "name": "Payment Processing System",
+      "description": "Secure payment processing microservice",
+      "technologies": ["Python", "Django", "PostgreSQL", "Celery"],
+      "startDate": "2023-05-01",
+      "endDate": "2023-11-30",
+      "role": "Backend Developer",
+      "status": "Completed"
+    },
+    {
+      "id": "p6",
+      "name": "Inventory Management",
+      "description": "Real-time inventory tracking system",
+      "technologies": ["Python", "FastAPI", "MongoDB", "Redis"],
+      "startDate": "2022-08-15",
+      "endDate": "2023-04-30",
+      "role": "Senior Backend Developer",
+      "status": "Completed"
+    }
+  ],
+  "currentAssignments": [
+    {
+      "id": "a4",
+      "project": {
+        "id": "cp4",
+        "name": "Microservices Migration",
+        "description": "Migrate monolith to microservices architecture",
+        "technologies": ["Python", "FastAPI", "Docker", "Kubernetes"],
+        "startDate": "2026-01-20",
+        "endDate": "2026-09-10",
+        "role": "Backend Architect",
+        "status": "In Progress"
+      },
+      "startDate": "2026-01-20",
+      "endDate": "2026-09-10",
+      "allocation": 80,
+      "status": "Active"
+    },
+    {
+      "id": "a5",
+      "project": {
+        "id": "cp5",
+        "name": "Database Optimization",
+        "description": "Performance optimization for core databases",
+        "technologies": ["PostgreSQL", "Redis", "Python"],
+        "startDate": "2026-04-10",
+        "endDate": "2026-06-25",
+        "role": "Database Developer",
+        "status": "In Progress"
+      },
+      "startDate": "2026-04-10",
+      "endDate": "2026-06-25",
+      "allocation": 20,
+      "status": "Active"
+    }
+  ],
+  "rating": {
+    "averageRating": 4.5,
+    "totalReviews": 12,
+    "reviews": [
+      {
+        "id": "r6",
+        "reviewerName": "Alex Thompson",
+        "rating": 5,
+        "comment": "Exceptional backend architecture and database optimization skills.",
+        "commentJa": "卓越したバックエンドアーキテクチャとデータベース最適化スキル。",
+        "date": "2024-01-05",
+        "projectId": "p5"
+      },
+      {
+        "id": "r7",
+        "reviewerName": "Lisa Wang",
+        "rating": 4,
+        "comment": "Reliable and efficient. Great at solving complex problems.",
+        "commentJa": "信頼性が高く効率的。複雑な問題解決に優れています。",
+        "date": "2023-12-01"
+      }
+    ]
+  }
+}

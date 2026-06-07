@@ -1,0 +1,61 @@
+name: 💡 Feature Request
+description: Request a new feature or enhancement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the following information.
+
+  - type: textarea
+    id: background
+    attributes:
+      label: ◆ Background & Problem
+      description: Explain the background and problem that this new feature would solve
+      placeholder: Users need to manually export reports every week, which is time-consuming and error-prone. We need an automated solution to schedule and deliver reports.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: ◆ Proposed Solution
+      description: Explain how the new feature would solve the problem
+      placeholder: Implement a scheduled report system that allows users to set up recurring exports (daily, weekly, monthly) with email delivery and customizable report formats.
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-design
+    attributes:
+      label: ◆ Technical Design Overview
+      description: Describe the technical design and implementation approach
+      placeholder: |
+        1. Create new "/reports/scheduler" route with scheduling interface
+        2. Add "features/report-scheduler" module with components for:
+           - Schedule configuration form
+           - Report template selection
+           - Email recipient management
+        3. Implement AWS Lambda function for report generation
+        4. Use AWS EventBridge for scheduling triggers
+        5. Integrate with existing report components from "features/analytics"
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: ◆ Workaround/Alternatives
+      description: Describe any temporary workarounds until this feature is implemented
+      placeholder: Users can continue to manually export reports from the analytics dashboard and set personal calendar reminders for weekly exports.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: ◆ Additional Information
+      description: Any additional information, notes, or context
+      placeholder: Consider integration with popular email services (Gmail, Outlook) and support for multiple file formats (PDF, Excel, CSV). Priority should be given to weekly reports as they are most commonly requested.
+    validations:
+      required: false

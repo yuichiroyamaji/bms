@@ -1,0 +1,90 @@
+name: 🐛 Bug Report
+description: Report a bug or issue
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the following information.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: ◆ Bug Description
+      description: Please describe the bug in detail
+      placeholder: Dashboard crashes when trying to load user analytics data with more than 1000 records
+    validations:
+      required: true
+
+  - type: textarea
+    id: condition
+    attributes:
+      label: ◆ Occurrence Conditions
+      description: Please describe the conditions under which the bug occurs
+      placeholder: |
+        【Environment】Production
+        【Conditions】Only occurs when user has admin privileges and accesses the analytics page during peak hours
+        Browser: Chrome 120+, Safari 17+
+    validations:
+      required: true
+
+  - type: textarea
+    id: cause
+    attributes:
+      label: ◆ Root Cause
+      description: Please describe the root cause of the bug
+      placeholder: |
+        ※ Describe what is currently known
+        Memory leak in the chart rendering component when processing large datasets
+        Investigation ongoing for exact memory allocation issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: ◆ Steps to Reproduce
+      description: Please describe the steps to reproduce the bug
+      placeholder: |
+        1. Login as admin user
+        2. Navigate to 'Analytics' page
+        3. Select date range with more than 1000 data points
+        4. Click 'Generate Report' button
+        5. Browser becomes unresponsive after 30 seconds
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ◆ Expected Behavior
+      description: Please describe the expected behavior
+      placeholder: The analytics report should load smoothly within 5 seconds regardless of data size, with proper pagination or data chunking
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: ◆ Proposed Solution
+      description: Please describe the proposed solution to fix the bug
+      placeholder: |
+        ※ Describe what is currently planned
+        Implement virtual scrolling for large datasets and add data pagination
+        Consider using Web Workers for heavy chart calculations
+        Under review by development team
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: ◆ Impact Assessment
+      description: Please describe the potential impact of implementing the proposed solution
+      placeholder: |
+        ※ Describe what is currently known
+        Low risk - changes are isolated to analytics components
+        May require database query optimization for better performance
+        No breaking changes expected for existing functionality
+    validations:
+      required: true
