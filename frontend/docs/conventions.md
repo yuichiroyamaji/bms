@@ -215,7 +215,7 @@ msg = `メッセージ01${message02}メッセージ03`
 2. 状態管理について
 - 実際の開発では、useStateとServerActionsで状態を管理させる方法の2種類を使って開発を行う。これは前述の通り、ServerActionsは実装の手段として追加された一つの手段であって、既存の開発手法の全てを完全に覆すようなものではないからです。また、ServerActionsを使う代表的な例であるフォーム実装では、エラー表示が欠かせないため、その際はuseFormStateなどを用いてエラー情報などをクライアント側と同期させるようにする。
 
-※使用例：nextjs/server-actions.md 参照
+※使用例：reference/nextjs/server-actions.md 参照
 
 ## 9.ファイル/フォルダの命名規則
 ### ● ファイルの命名規則

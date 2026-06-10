@@ -8,10 +8,10 @@ Admin dashboard UI based on TailAdmin. App Router + React Server Components.
 @docs/structure.md
 
 Deeper references:
-- Next.js App Router: `docs/nextjs/app-router.md`
-- Server Actions: `docs/nextjs/server-actions.md`
-- Library setup: `docs/lib-setup/` (biome, jest, pino, prisma)
-- UI template: `docs/ui-template/tailadmin-readme.md`
+- Next.js App Router: `docs/reference/nextjs/app-router.md`
+- Server Actions: `docs/reference/nextjs/server-actions.md`
+- Library setup: `docs/reference/lib-setup/` (biome, jest, pino, prisma)
+- UI template: `docs/reference/ui-template/tailadmin-readme.md`
 - Testing strategy: `docs/test-plan.md` (how we test the frontend; `test-cases.md` follows it)
 
 Feature specs live next to the feature, e.g. `src/features/engineers/docs/` →

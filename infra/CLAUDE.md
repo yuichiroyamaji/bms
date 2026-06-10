@@ -7,7 +7,7 @@ Infrastructure as code for deploying the Next.js app to AWS via **OpenNext
 
 @docs/deployment.md
 
-- Migration history (AppRunner → OpenNext): `docs/migration-plan.md`
+- Migration history (AppRunner → OpenNext): `docs/reference/migration-plan.md`
 - AWS architecture diagram: `docs/aws-infrastructure-diagram.md`
 - Testing strategy: `docs/test-plan.md` (CDK assertions + snapshots; `test-cases.md` follows it)
 

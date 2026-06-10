@@ -129,12 +129,15 @@ Phase labels track progress: `phase:requirements`, `phase:design`, `phase:test-c
 
 ## Starting a new spec
 
-1. `/new-feature <name>` (Claude Code) scaffolds the spec set from `docs/specs/_template/`,
-   opens the Spec (epic) issue, and starts Phase 1.
-2. Or manually: copy `docs/specs/_template/` to the location and open a Spec issue from the
-   **📋 Spec / Epic** template.
+1. `/new-feature <name>` (Claude Code) scaffolds the spec set from `docs/specs/_template/` and
+   runs the gated interview (Gates 1–4). The GitHub **issue + implementation branch are created
+   after Gate 4**.
+2. Or manually: copy `docs/specs/_template/` to the location and fill the four docs.
+
+See the step-by-step quick start: [`new-feature-workflow.md`](./new-feature-workflow.md).
 
 ## References
+- Quick start (create a feature): [`new-feature-workflow.md`](./new-feature-workflow.md)
 - Repo & docs layout: [`structure.md`](./structure.md)
 - Branching: [`git-flow.md`](./git-flow.md)
-- AI-coding setup record: [`ai-coding-transformation.md`](./ai-coding-transformation.md)
+- AI-coding setup record: [`reference/ai-coding-transformation.md`](./reference/ai-coding-transformation.md)

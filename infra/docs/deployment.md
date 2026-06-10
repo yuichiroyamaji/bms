@@ -321,4 +321,4 @@ GitHub Actions → OIDC → IAM Role → CDK → CloudFormation
 - **cdk-nextjs-standalone**: https://github.com/jetbridge/cdk-nextjs
 - **AWS CDK Docs**: https://docs.aws.amazon.com/cdk/
 - **Next.js Docs**: https://nextjs.org/docs
-- **Migration Plan**: See [`migration-plan.md`](./migration-plan.md)
+- **Migration Plan**: See [`reference/migration-plan.md`](./reference/migration-plan.md)

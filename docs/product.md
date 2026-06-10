@@ -20,5 +20,5 @@ serverless adapter — chosen for full Next.js feature support (SSR, ISR, Middle
 Optimization), pay-per-request cost (typically < $1 USD/month at low traffic), global CDN
 delivery via CloudFront, and complete IaC management through CDK.
 
-> The project originally targeted AWS AppRunner; see [`../infra/docs/migration-plan.md`](../infra/docs/migration-plan.md)
+> The project originally targeted AWS AppRunner; see [`../infra/docs/reference/migration-plan.md`](../infra/docs/reference/migration-plan.md)
 > for the rationale behind the move to OpenNext.

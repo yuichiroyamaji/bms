@@ -3,7 +3,7 @@
 How we test the frontend. This is the **strategy** that every feature's `test-cases.md`
 must follow. For the workflow (when tests are written), see
 [`../../docs/development-process.md`](../../docs/development-process.md); for Jest setup, see
-[`lib-setup/jest.md`](./lib-setup/jest.md).
+[`reference/lib-setup/jest.md`](./reference/lib-setup/jest.md).
 
 > **Tooling status:** ⚠️ not yet installed in `frontend/package.json`. Target stack:
 > **Jest** (+ ts/swc), **React Testing Library** (component tests), **Playwright** (E2E).

@@ -12,7 +12,7 @@ Full-stack admin dashboard. Monorepo with three deployable domains: `frontend/` 
 
 - Git workflow: @docs/git-flow.md
 - Project backlog / TODOs: @docs/todo.md
-- AI-coding transformation record & roadmap: `docs/ai-coding-transformation.md`
+- AI-coding transformation record & roadmap: `docs/reference/ai-coding-transformation.md`
 
 ## Domain docs (loaded automatically when you work in each subtree)
 
