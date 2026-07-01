@@ -15,17 +15,22 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION,
 };
 
-// Infrastructure stack (databases, caching, etc.)
+// Infrastructure stack (databases, caching, CI/CD OIDC role, etc.)
+// NOTE: stackName is `bms-*` so this repo's deployments stay fully isolated from
+// the `admin-*` stacks created by the original template repo in the same account.
 new InfraStack(app, `InfraStack-${environment}`, {
   env,
-  stackName: `admin-infra-${environment}`,
+  stackName: `bms-infra-${environment}`,
   // GitHub repository for CI/CD - UPDATE THIS if your repo name is different
-  githubRepo: 'yuichiroyamaji/serverless-admin-template',
+  githubRepo: 'yuichiroyamaji/bms',
+  // The account-wide GitHub OIDC provider already exists (created by the original
+  // repo). Import it instead of creating a duplicate (only one allowed per account).
+  createOidcProvider: false,
 });
 
-// AppRunner stack for Next.js frontend
+// OpenNext stack for the Next.js frontend (CloudFront + Lambda + S3)
 new AppStack(app, `AppStack-${environment}`, {
   env,
-  stackName: `admin-app-${environment}`,
+  stackName: `bms-app-${environment}`,
   ...config,
 });

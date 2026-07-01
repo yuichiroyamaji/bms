@@ -14,6 +14,13 @@ export interface GitHubOidcRoleProps {
    * Default: ['main', 'develop']
    */
   branches?: string[];
+
+  /**
+   * Whether to create the account-wide GitHub OIDC provider.
+   * Only ONE provider per URL can exist per AWS account. Set false to reuse an
+   * existing provider created elsewhere in the same account. Default: false.
+   */
+  createOidcProvider?: boolean;
 }
 
 export class GitHubOidcRole extends Construct {
@@ -24,17 +31,16 @@ export class GitHubOidcRole extends Construct {
 
     const branches = props.branches || ['main', 'develop'];
 
-    // Create OIDC provider for GitHub Actions
-    // Note: GitHub's OIDC provider thumbprints are updated periodically
-    // Current thumbprints as of 2024 (GitHub uses multiple certificates)
-    const githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
-      url: 'https://token.actions.githubusercontent.com',
-      clientIds: ['sts.amazonaws.com'],
-      thumbprints: [
-        '6938fd4d98bab03faadb97b34396831e3780aea1',
-        '1c58a3a8518e8759bf075b76b750d4f2df264fcd'
-      ],
-    });
+    // GitHub Actions OIDC provider. Only one provider per URL can exist per AWS
+    // account, so by default we import the existing one rather than create a
+    // duplicate (which would fail with EntityAlreadyExists). Set
+    // `createOidcProvider: true` only in the account/stack that owns it.
+    const providerArn = props.createOidcProvider
+      ? new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
+          url: 'https://token.actions.githubusercontent.com',
+          clientIds: ['sts.amazonaws.com'],
+        }).openIdConnectProviderArn
+      : `arn:aws:iam::${cdk.Stack.of(this).account}:oidc-provider/token.actions.githubusercontent.com`;
 
     // Build trust policy conditions
     // The 'sub' claim format from GitHub can be:
@@ -56,9 +62,9 @@ export class GitHubOidcRole extends Construct {
     // Create IAM role that GitHub Actions can assume
     // Note: Role name doesn't include 'github' to avoid potential issues
     this.role = new iam.Role(this, 'GitHubActionsRole', {
-      roleName: 'github-oidc-deploy-role',
+      roleName: 'bms-github-oidc-deploy-role',
       assumedBy: new iam.FederatedPrincipal(
-        githubProvider.openIdConnectProviderArn,
+        providerArn,
         trustPolicyConditions,
         'sts:AssumeRoleWithWebIdentity'
       ),
@@ -92,11 +98,11 @@ export class GitHubOidcRole extends Construct {
       })
     );
 
-    // Output the role ARN
+    // Output the role ARN (no exportName — export names must be unique per
+    // account/region and the original repo's stack already exports one).
     new cdk.CfnOutput(this, 'GitHubActionsRoleArn', {
       value: this.role.roleArn,
       description: 'IAM Role ARN for GitHub Actions',
-      exportName: 'GitHubActionsRoleArn',
     });
   }
 }

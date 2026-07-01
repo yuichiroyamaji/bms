@@ -2,17 +2,18 @@
   "name": "infra",
   "version": "0.1.0",
   "bin": {
-    "infra": "bin/infra.js"
+    "infra": "dist/bin/app.js"
   },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:dev": "npm run build && cdk deploy AppStack-dev -c environment=dev",
-    "deploy:prod": "npm run build && cdk deploy AppStack-prod -c environment=prod",
-    "deploy:all:dev": "npm run build && cdk deploy --all -c environment=dev",
-    "deploy:all:prod": "npm run build && cdk deploy --all -c environment=prod",
+    "build:site": "npm --prefix ../frontend run build:open-next",
+    "deploy:dev": "npm run build:site && npm run build && cdk deploy AppStack-dev -c environment=dev",
+    "deploy:prod": "npm run build:site && npm run build && cdk deploy AppStack-prod -c environment=prod",
+    "deploy:all:dev": "npm run build:site && npm run build && cdk deploy --all -c environment=dev",
+    "deploy:all:prod": "npm run build:site && npm run build && cdk deploy --all -c environment=prod",
     "diff:dev": "npm run build && cdk diff AppStack-dev -c environment=dev",
     "diff:prod": "npm run build && cdk diff AppStack-prod -c environment=prod",
     "synth:dev": "npm run build && cdk synth AppStack-dev -c environment=dev",
