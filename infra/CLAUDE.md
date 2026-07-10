@@ -7,6 +7,8 @@ Infrastructure as code for deploying the Next.js app to AWS via **OpenNext
 
 @docs/deployment.md
 
+- First deploy / AWS account setup: `../docs/getting-started.md`
+- Deployment flow diagrams: `../docs/deployment-flows.md`
 - Migration history (AppRunner → OpenNext): `docs/migration-plan.md`
 - AWS architecture diagram: `docs/aws-infrastructure-diagram.md`
 

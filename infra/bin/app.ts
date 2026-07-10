@@ -6,24 +6,43 @@ import { getConfig } from '../config/app-config';
 
 const app = new cdk.App();
 
-// Get environment from context or default to 'dev'
-const environment = app.node.tryGetContext('environment') || 'dev';
-const config = getConfig(environment as 'dev' | 'prod');
+// Environment is required - no default. Pass -c environment=dev or -c environment=prod
+// (e.g. `npx cdk deploy ... -c environment=dev`, or use npm run deploy:dev / deploy:prod).
+const environment = app.node.tryGetContext('environment');
+if (environment !== 'dev' && environment !== 'prod') {
+  throw new Error(
+    'Missing or invalid required CDK context "environment". ' +
+      'Pass -c environment=dev or -c environment=prod ' +
+      `(received: ${JSON.stringify(environment)}).`
+  );
+}
+const config = getConfig(environment);
 
+if (config.awsAccountId.startsWith('REPLACE_')) {
+  throw new Error(
+    `infra/config/app-config.ts: awsAccountId for "${environment}" is still a placeholder. ` +
+      'Set it to the actual AWS account ID for this environment before deploying.'
+  );
+}
+
+// Account/region are pinned per environment (not read from ambient AWS credentials),
+// so CDK refuses to deploy if the active AWS profile doesn't match this environment's account.
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.CDK_DEFAULT_REGION,
+  account: config.awsAccountId,
+  region: config.awsRegion || process.env.CDK_DEFAULT_REGION,
 };
+
+// GitHub repository for CI/CD OIDC trust policy - UPDATE THIS when copying this repo for a new project
+const githubRepo = 'yuichiroyamaji/bms';
 
 // Infrastructure stack (databases, caching, etc.)
 new InfraStack(app, `InfraStack-${environment}`, {
   env,
   stackName: `admin-infra-${environment}`,
-  // GitHub repository for CI/CD - UPDATE THIS if your repo name is different
-  githubRepo: 'yuichiroyamaji/serverless-admin-template',
+  githubRepo,
 });
 
-// AppRunner stack for Next.js frontend
+// OpenNext stack for the Next.js frontend (CloudFront + Lambda + S3)
 new AppStack(app, `AppStack-${environment}`, {
   env,
   stackName: `admin-app-${environment}`,
