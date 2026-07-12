@@ -34,7 +34,7 @@ export interface AppConfig {
 
 export const devConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the dev environment
-  awsAccountId: 'REPLACE_WITH_DEV_ACCOUNT_ID',
+  awsAccountId: '361454773891',
   // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 1024,
@@ -49,7 +49,7 @@ export const devConfig: AppConfig = {
 
 export const prodConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the prod environment
-  awsAccountId: 'REPLACE_WITH_PROD_ACCOUNT_ID',
+  awsAccountId: '361454773891',
   // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 2048,
