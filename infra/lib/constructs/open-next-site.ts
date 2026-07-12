@@ -115,8 +115,11 @@ export class OpenNextSite extends Construct {
     tagCacheTable.grantReadWriteData(this.serverFunction);
     revalidationQueue.grantSendMessages(this.serverFunction);
 
+    // AWS_IAM (not NONE): CloudFront signs origin requests via OAC (see Distribution
+    // below). Public (NONE) function URLs are rejected in this AWS org, and IAM + OAC
+    // is the AWS-recommended secure pattern — the URL is only reachable via CloudFront.
     const serverFnUrl = this.serverFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
     // ---------- Image-optimization Lambda ----------
@@ -135,7 +138,7 @@ export class OpenNextSite extends Construct {
     this.bucket.grantRead(this.imageFunction, '_assets/*');
 
     const imageFnUrl = this.imageFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
     // ---------- Revalidation Lambda (SQS-triggered) ----------
@@ -202,8 +205,11 @@ export class OpenNextSite extends Construct {
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(this.bucket, {
       originPath: '/_assets',
     });
-    const serverOrigin = new origins.FunctionUrlOrigin(serverFnUrl);
-    const imageOrigin = new origins.FunctionUrlOrigin(imageFnUrl);
+    // OAC-signed origins: CloudFront signs each request with SigV4 so the AWS_IAM
+    // function URLs accept it. withOriginAccessControl also auto-grants CloudFront
+    // lambda:InvokeFunctionUrl scoped to this distribution.
+    const serverOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(serverFnUrl);
+    const imageOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(imageFnUrl);
 
     const allViewerExceptHost = cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER;
     const cachingOptimized = cloudfront.CachePolicy.CACHING_OPTIMIZED;
