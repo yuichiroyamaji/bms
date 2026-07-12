@@ -10,6 +10,8 @@ Full-stack admin dashboard. Monorepo with three deployable domains: `frontend/` 
 @docs/structure.md
 @docs/development-process.md
 
+- First deploy / AWS account setup: @docs/getting-started.md
+- Deployment flow diagrams: `docs/deployment-flows.md`
 - Git workflow: @docs/git-flow.md
 - Project backlog / TODOs: @docs/todo.md
 - AI-coding transformation record & roadmap: `docs/reference/ai-coding-transformation.md`

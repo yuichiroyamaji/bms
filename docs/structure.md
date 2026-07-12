@@ -34,6 +34,8 @@ docs/                              # PROJECT-WIDE
 ├── structure.md                   # this file: repo layout + doc policy + this map
 ├── new-feature-workflow.md        # quick start: how to create a feature (/new-feature → docs → issue → PR)
 ├── development-process.md         # Spec-Driven + Test-Driven workflow (phases, gates, GitHub mapping)
+├── getting-started.md             # first-deploy steps: AWS account pinning, InfraStack/AppStack, GitHub OIDC secrets
+├── deployment-flows.md            # diagrams of manual + CI deploy flows, incl. the account-pinning guard
 ├── git-flow.md                    # branching strategy
 ├── todo.md                        # project backlog
 ├── reference/                     # supporting / non-canonical docs (look-up material, not active rules)

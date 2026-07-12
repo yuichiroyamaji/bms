@@ -3,6 +3,16 @@
  */
 
 export interface AppConfig {
+  /**
+   * AWS account ID this environment must deploy to.
+   * CDK pins the stack to this account and refuses to deploy if the
+   * active AWS credentials/profile resolve to a different account.
+   */
+  awsAccountId: string;
+
+  /** AWS region to deploy to (optional, falls back to CDK_DEFAULT_REGION). */
+  awsRegion?: string;
+
   /** Email for CloudWatch alarms. */
   alarmEmail?: string;
 
@@ -23,6 +33,9 @@ export interface AppConfig {
 }
 
 export const devConfig: AppConfig = {
+  // REPLACE with the actual AWS account ID for the dev environment
+  awsAccountId: 'REPLACE_WITH_DEV_ACCOUNT_ID',
+  // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 1024,
   imageMemoryMb: 1536,
@@ -35,6 +48,9 @@ export const devConfig: AppConfig = {
 };
 
 export const prodConfig: AppConfig = {
+  // REPLACE with the actual AWS account ID for the prod environment
+  awsAccountId: 'REPLACE_WITH_PROD_ACCOUNT_ID',
+  // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 2048,
   imageMemoryMb: 2048,
@@ -43,6 +59,6 @@ export const prodConfig: AppConfig = {
   // certificateArn: 'arn:aws:acm:us-east-1:...',
 };
 
-export const getConfig = (environment: 'dev' | 'prod' = 'dev'): AppConfig => {
+export const getConfig = (environment: 'dev' | 'prod'): AppConfig => {
   return environment === 'prod' ? prodConfig : devConfig;
 };
