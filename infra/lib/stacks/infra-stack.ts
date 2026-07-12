@@ -7,14 +7,6 @@ export interface InfraStackProps extends cdk.StackProps {
    * GitHub repository for CI/CD (format: owner/repo)
    */
   githubRepo?: string;
-
-  /**
-   * Whether to create the account-wide GitHub OIDC provider.
-   * Only ONE provider per URL can exist per AWS account — set false to reuse an
-   * existing one (e.g. created by another repo/stack in the same account).
-   * Default: false.
-   */
-  createOidcProvider?: boolean;
 }
 
 export class InfraStack extends cdk.Stack {
@@ -26,7 +18,6 @@ export class InfraStack extends cdk.Stack {
       new GitHubOidcRole(this, 'GitHubOidc', {
         githubRepo: props.githubRepo,
         branches: ['main', 'develop'],
-        createOidcProvider: props.createOidcProvider ?? false,
       });
     }
 

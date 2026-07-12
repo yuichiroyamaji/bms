@@ -8,13 +8,12 @@ phase begins. This keeps AI-written code aligned with intent and verifiable.
 ## TL;DR
 
 ```
-Idea ─▶ requirements.md ─▶ design.md ─▶ test-cases.md ─▶ tasks.md ─▶ Issue + branch ─▶ code ─▶ merge
-         └─ GATE 1 ──┘    └ GATE 2 ┘   └─ GATE 3 ──┘    └ GATE 4 ┘   (after all 4 approved)   TDD: red→green→refactor
+Idea ─▶ Issue ─▶ requirements.md ─▶ design.md ─▶ test-cases.md ─▶ tasks.md ─▶ code ─▶ merge
+                  └─ GATE 1 ──┘    └ GATE 2 ┘   └─ GATE 3 ──┘    └ GATE 4 ┘   TDD: red→green→refactor
 ```
 
 - Spec + test cases live **in the repo**, next to the code they describe.
-- The **GitHub Issue + implementation branch are created after Gate 4** (all 4 docs approved),
-  then implementation happens on that branch.
+- **GitHub Issues** track execution (epic + sub-issues).
 - **Notion** tracks portfolio/roadmap only — not individual work items.
 
 ## The unit of work: 4 documents
@@ -40,9 +39,7 @@ The AI **stops at each gate** and waits for explicit approval. It does not skip 
 ## The phases
 
 ### Phase 0 — Intake
-A need/idea is captured (informally, or as a Feature Request / Bug). The "ask"; no solution yet.
-The formal tracking **issue and implementation branch are created later, after Gate 4** — the
-spec phase (Gates 1–4) happens in the repo first. (Bugs may still open a `bug` issue immediately.)
+A need is captured as a **GitHub Issue** (Feature Request or Bug). The "ask"; no solution yet.
 
 ### Phase 1 — Requirements → `requirements.md`  ·  **GATE 1**
 Defines **WHAT & WHY** with EARS acceptance criteria.
@@ -63,8 +60,6 @@ Defines the **tests that prove the requirements** — this is what makes the wor
 - Each test case cites the acceptance criterion it verifies (`Req 1.1`)
 - Covers happy path, edge cases, error handling
 - Includes a coverage check: every acceptance criterion → at least one test case
-- **Follows the domain's `test-plan.md`** (`frontend`/`backend`/`infra`) for tooling, test
-  types, file locations, and coverage — each domain tests differently
 
 > **Gate 3:** human approves the test cases before planning implementation.
 
@@ -81,9 +76,8 @@ For each task, follow **red → green → refactor**:
 2. **Green** — write the minimum code to make them pass.
 3. **Refactor** — clean up with tests staying green.
 
-Work happens on the implementation branch created after Gate 4
-(`feature/#<issue>_<slug>`, off `develop` — see GitHub mapping). PRs reference the spec and the
-issue; tests live with the code (Jest units, Playwright E2E).
+One task → one branch → one PR (GitFlow, see [`git-flow.md`](./git-flow.md)). PR references the
+spec and `Closes #<issue>`. Tests live with the code (Jest units, Playwright E2E).
 
 ### Phase 6 — Verify & Done
 PR reviewed and merged; issue auto-closes; `tasks.md` checkbox ticked; epic updates. Specs and
@@ -115,8 +109,7 @@ Phase labels track progress: `phase:requirements`, `phase:design`, `phase:test-c
 `phase:tasks`, `phase:implementation`.
 
 **Branch & PR conventions**
-- Branch (created after Gate 4, off `develop`): `feature/#<issue>_<slug>` (or `fix/#<issue>_<slug>`).
-  Quote it in shell commands because of the `#`, e.g. `git checkout -b "feature/#4_new-feature-commands" develop`.
+- Branch: `feature/<issue#>-<short-slug>` (or `fix/<issue#>-…`), per GitFlow
 - PR body links the spec and `Closes #<issue>`; closing sub-issues updates the epic checklist
 
 ## Authority — who owns what (avoids triple-tracking)
@@ -129,15 +122,12 @@ Phase labels track progress: `phase:requirements`, `phase:design`, `phase:test-c
 
 ## Starting a new spec
 
-1. `/new-feature <name>` (Claude Code) scaffolds the spec set from `docs/specs/_template/` and
-   runs the gated interview (Gates 1–4). The GitHub **issue + implementation branch are created
-   after Gate 4**.
-2. Or manually: copy `docs/specs/_template/` to the location and fill the four docs.
-
-See the step-by-step quick start: [`new-feature-workflow.md`](./new-feature-workflow.md).
+1. `/new-feature <name>` (Claude Code) scaffolds the spec set from `docs/specs/_template/`,
+   opens the Spec (epic) issue, and starts Phase 1.
+2. Or manually: copy `docs/specs/_template/` to the location and open a Spec issue from the
+   **📋 Spec / Epic** template.
 
 ## References
-- Quick start (create a feature): [`new-feature-workflow.md`](./new-feature-workflow.md)
 - Repo & docs layout: [`structure.md`](./structure.md)
 - Branching: [`git-flow.md`](./git-flow.md)
-- AI-coding setup record: [`reference/ai-coding-transformation.md`](./reference/ai-coding-transformation.md)
+- AI-coding setup record: [`ai-coding-transformation.md`](./ai-coding-transformation.md)

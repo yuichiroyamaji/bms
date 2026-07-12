@@ -7,15 +7,10 @@ Infrastructure as code for deploying the Next.js app to AWS via **OpenNext
 
 @docs/deployment.md
 
-<<<<<<< HEAD
-- Migration history (AppRunner → OpenNext): `docs/reference/migration-plan.md`
-=======
 - First deploy / AWS account setup: `../docs/getting-started.md`
 - Deployment flow diagrams: `../docs/deployment-flows.md`
 - Migration history (AppRunner → OpenNext): `docs/migration-plan.md`
->>>>>>> main
 - AWS architecture diagram: `docs/aws-infrastructure-diagram.md`
-- Testing strategy: `docs/test-plan.md` (CDK assertions + snapshots; `test-cases.md` follows it)
 
 > `docs/_archive-apprunner/` holds the retired AppRunner setup — obsolete, do not follow it.
 

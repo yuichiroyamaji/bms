@@ -32,14 +32,12 @@ docs/                              # PROJECT-WIDE
 ├── product.md                     # what the product is
 ├── tech-stack.md                  # stack, hosting rationale, dev tools, install notes
 ├── structure.md                   # this file: repo layout + doc policy + this map
-├── new-feature-workflow.md        # quick start: how to create a feature (/new-feature → docs → issue → PR)
 ├── development-process.md         # Spec-Driven + Test-Driven workflow (phases, gates, GitHub mapping)
 ├── getting-started.md             # first-deploy steps: AWS account pinning, InfraStack/AppStack, GitHub OIDC secrets
 ├── deployment-flows.md            # diagrams of manual + CI deploy flows, incl. the account-pinning guard
 ├── git-flow.md                    # branching strategy
 ├── todo.md                        # project backlog
-├── reference/                     # supporting / non-canonical docs (look-up material, not active rules)
-│   └── ai-coding-transformation.md  # record of the AI-coding conversion + next agenda
+├── ai-coding-transformation.md    # record of the AI-coding conversion + next agenda
 ├── specs/                         # cross-cutting (multi-domain) specs
 │   ├── _template/                 # requirements/design/test-cases/tasks skeletons to copy
 │   └── <initiative>/{requirements,design,test-cases,tasks}.md
@@ -50,11 +48,9 @@ frontend/
 ├── docs/
 │   ├── conventions.md             # coding conventions (canonical)
 │   ├── structure.md               # frontend src/ layout
-│   ├── test-plan.md               # frontend testing strategy (Jest/RTL/Playwright)
-│   └── reference/                 # supporting / non-canonical docs (look-up material, not active rules)
-│       ├── nextjs/{app-router,server-actions}.md
-│       ├── lib-setup/{biome,jest,pino,prisma}.md
-│       └── ui-template/tailadmin-readme.md
+│   ├── nextjs/{app-router,server-actions}.md
+│   ├── lib-setup/{biome,jest,pino,prisma}.md
+│   └── ui-template/tailadmin-readme.md
 └── src/features/<feature>/docs/   # FEATURE scope
     └── requirements.md  design.md  test-cases.md  tasks.md
 
@@ -62,17 +58,14 @@ infra/
 ├── CLAUDE.md                      # cdk / OpenNext commands + layout
 └── docs/
     ├── deployment.md              # current OpenNext deploy guide
-    ├── test-plan.md               # infra testing strategy (CDK assertions + snapshots)
+    ├── migration-plan.md          # AppRunner → OpenNext history
     ├── aws-infrastructure-diagram.md
     ├── assets/aws_diagram.drawio
-    ├── reference/                 # supporting / non-canonical docs (look-up material, not active rules)
-    │   └── migration-plan.md      # AppRunner → OpenNext history
     └── _archive-apprunner/        # retired AppRunner docs (obsolete; do not follow)
 
 backend/
 ├── CLAUDE.md
-└── docs/
-    └── test-plan.md               # backend testing strategy (Lambda; starter policy)
+└── docs/                          # backend docs (grows with the codebase)
 ```
 
 ## Domain structure details
