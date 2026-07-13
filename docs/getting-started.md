@@ -27,7 +27,35 @@ to be active. If `dev` and `prod` should share one account, just set the same ID
 > This is currently unset for this repo — both `devConfig` and `prodConfig` still have the
 > placeholder values. Nothing will deploy until real account IDs are filled in here.
 
-## 2. Deploy the infra stack
+## 2. Build the OpenNext frontend bundle
+
+Every CDK command loads `app.js`, which synthesizes **both** stacks — and `AppStack` points at
+the OpenNext bundle at `frontend/.open-next`. If that directory doesn't exist yet, synth fails
+immediately with `ValidationError: Cannot find asset at .../frontend/.open-next/assets`, even
+for a command that only touches `InfraStack` (like `bootstrap`). Build it first:
+
+```bash
+cd infra
+npm install
+npm run build:frontend                 # open-next build → creates frontend/.open-next
+```
+
+> `npm run build:frontend` runs `open-next build` in `frontend/`. The `npm run deploy:dev` /
+> `deploy:prod` scripts used in step 5 chain both this and the infra build for you
+> automatically — it's only the **first-time `bootstrap` + manual `cdk` commands in step 4**
+> that need steps 2–3 run explicitly first.
+
+## 3. Compile the infra TypeScript
+
+CDK does not run TypeScript directly — `cdk.json` invokes `node dist/bin/app.js`. Compile the
+infra package so `dist/` exists before any `bootstrap`/`deploy`/`synth`/`diff`:
+
+```bash
+cd infra
+npm run build                          # tsc → compiles infra to dist/
+```
+
+## 4. Deploy the infra stack
 
 The `environment` context is mandatory — there's no default. `npx cdk deploy` (or
 `synth`/`diff`) without `-c environment=dev|prod` throws immediately.
@@ -43,7 +71,7 @@ aws sts get-caller-identity     # optional early sanity check
 
 **PowerShell (Windows):**
 ```powershell
-$env:AWS_PROFILE = "bms"   # note: quotes are required - $env:AWS_PROFILE = bms fails
+$env:AWS_PROFILE = "opennext-serverless-user"   # note: quotes are required - $env:AWS_PROFILE = bms fails
 aws sts get-caller-identity
 ```
 
@@ -52,10 +80,12 @@ again in a new one.
 
 ```bash
 cd infra
-npm install
 npx cdk bootstrap -c environment=dev   # first time only, per AWS account/region
 npx cdk deploy InfraStack-dev -c environment=dev
 ```
+
+> **Complete steps 2 and 3 before any CDK command.** Without the OpenNext bundle and
+> `dist/bin/app.js`, synth fails even for InfraStack-only commands like `bootstrap`.
 
 `-c environment=` is required on `bootstrap` too, not just `deploy`/`synth`/`diff` — without an
 explicit `aws://ACCOUNT/REGION` target, the CDK CLI still loads `app.js` to figure out which
@@ -83,7 +113,7 @@ environment-specific secret names instead: `AWS_ROLE_ARN_DEV`/`AWS_ROLE_ARN_PROD
 AWS credentials" step also needs updating to pick between them based on the resolved
 environment (it currently reads one fixed `AWS_ROLE_ARN`/`AWS_REGION` pair).
 
-## 3. Deploy the app stack
+## 5. Deploy the app stack
 
 ```bash
 cd infra
@@ -91,7 +121,7 @@ npm run deploy:dev     # cdk deploy AppStack-dev -c environment=dev
 npm run deploy:prod    # cdk deploy AppStack-prod -c environment=prod
 ```
 
-## 4. Push to `develop` and let GitHub Actions deploy
+## 6. Push to `develop` and let GitHub Actions deploy
 
 ```bash
 git checkout develop
