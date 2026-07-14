@@ -2,6 +2,7 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { InfraStack } from '../lib/stacks/infra-stack';
 import { AppStack } from '../lib/stacks/app-stack';
+import { MonitoringStack } from '../lib/stacks/monitoring-stack';
 import { getConfig } from '../config/app-config';
 
 const app = new cdk.App();
@@ -43,8 +44,25 @@ new InfraStack(app, `InfraStack-${environment}`, {
 });
 
 // OpenNext stack for the Next.js frontend (CloudFront + Lambda + S3)
-new AppStack(app, `AppStack-${environment}`, {
+const appStack = new AppStack(app, `AppStack-${environment}`, {
   env,
   stackName: `admin-app-${environment}`,
+  crossRegionReferences: true,
   ...config,
 });
+
+// CloudFront's 5xx alarm must live in us-east-1, where CloudFront publishes
+// its CloudWatch metrics — AppStack itself can deploy to any region.
+if (config.alarmEmail) {
+  const monitoringStack = new MonitoringStack(app, `MonitoringStack-${environment}`, {
+    env: {
+      account: config.awsAccountId,
+      region: 'us-east-1',
+    },
+    stackName: `admin-monitoring-${environment}`,
+    crossRegionReferences: true,
+    distributionId: appStack.distributionId,
+    alarmEmail: config.alarmEmail,
+  });
+  monitoringStack.addDependency(appStack);
+}

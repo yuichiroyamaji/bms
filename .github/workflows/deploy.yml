@@ -157,11 +157,11 @@ jobs:
 
       - name: CDK Diff
         working-directory: infra
-        run: npx cdk diff AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }}
+        run: npx cdk diff AppStack-${{ steps.env.outputs.environment }} MonitoringStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }}
 
       - name: Deploy to AWS
         working-directory: infra
-        run: npx cdk deploy AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }} --require-approval never
+        run: npx cdk deploy AppStack-${{ steps.env.outputs.environment }} MonitoringStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }} --require-approval never
 
       - name: Get deployment info
         id: deployment

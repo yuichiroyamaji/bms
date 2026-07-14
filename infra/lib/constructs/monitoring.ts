@@ -3,7 +3,6 @@ import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as cloudwatch_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import { Construct } from 'constructs';
 
 export interface MonitoringProps {
@@ -13,17 +12,11 @@ export interface MonitoringProps {
   /** Server Lambda to watch (errors, throttles, duration). */
   serverFunction: lambda.IFunction;
 
-  /** CloudFront distribution to watch (5xx error rate). */
-  distribution: cloudfront.IDistribution;
-
   /** Server function error count threshold over 5 min (default: 5). */
   errorThreshold?: number;
 
   /** Server function p99 duration threshold in ms (default: 8000). */
   durationP99ThresholdMs?: number;
-
-  /** CloudFront 5xx error rate threshold (percentage, default: 1). */
-  cfErrorRateThreshold?: number;
 }
 
 export class Monitoring extends Construct {
@@ -73,23 +66,10 @@ export class Monitoring extends Construct {
       alarmDescription: 'Server Lambda p99 latency is high',
     }).addAlarmAction(snsAction);
 
-    // CloudFront 5xx error rate (global metric, lives in us-east-1)
-    new cloudwatch.Alarm(this, 'CloudFront5xxAlarm', {
-      metric: new cloudwatch.Metric({
-        namespace: 'AWS/CloudFront',
-        metricName: '5xxErrorRate',
-        dimensionsMap: {
-          DistributionId: props.distribution.distributionId,
-          Region: 'Global',
-        },
-        statistic: 'Average',
-        period: cdk.Duration.minutes(5),
-      }),
-      threshold: props.cfErrorRateThreshold ?? 1,
-      evaluationPeriods: 2,
-      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
-      alarmDescription: 'CloudFront 5xx rate exceeded threshold',
-    }).addAlarmAction(snsAction);
+    // CloudFront's 5xx alarm lives separately in MonitoringStack, pinned to
+    // us-east-1 — that's the only region CloudFront publishes CloudWatch
+    // metrics to, and a CloudWatch alarm can't read metrics from another
+    // region. See infra/lib/stacks/monitoring-stack.ts.
 
     new cdk.CfnOutput(this, 'AlarmTopicArn', {
       value: this.alarmTopic.topicArn,

@@ -26,6 +26,7 @@ export interface AppStackProps extends cdk.StackProps {
 
 export class AppStack extends cdk.Stack {
   public readonly cloudFrontUrl: string;
+  public readonly distributionId: string;
 
   constructor(scope: Construct, id: string, props?: AppStackProps) {
     super(scope, id, props);
@@ -44,12 +45,13 @@ export class AppStack extends cdk.Stack {
     });
 
     this.cloudFrontUrl = `https://${site.distribution.distributionDomainName}`;
+    this.distributionId = site.distribution.distributionId;
 
+    // CloudFront's 5xx alarm is deployed separately in MonitoringStack (us-east-1) — see bin/app.ts.
     if (props?.alarmEmail) {
       new Monitoring(this, 'Monitoring', {
         alarmEmail: props.alarmEmail,
         serverFunction: site.serverFunction,
-        distribution: site.distribution,
       });
     }
   }
