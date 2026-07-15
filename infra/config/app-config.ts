@@ -32,6 +32,16 @@ export interface AppConfig {
   imageMemoryMb?: number;
 }
 
+/**
+ * GitHub repository (format: owner/repo) trusted to assume the CI/CD deploy
+ * role via OIDC — see infra/lib/constructs/github-oidc-role.ts. The trust
+ * policy is scoped to this exact value, so GitHub Actions in a differently
+ * named repo cannot assume the role until this is updated to match.
+ *
+ * REPLACE this when copying/forking this repo for a new project.
+ */
+export const githubRepo = 'yuichiroyamaji/bms';
+
 export const devConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the dev environment
   awsAccountId: '361454773891',

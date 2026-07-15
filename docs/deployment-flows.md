@@ -22,8 +22,8 @@ one chain, since drawing them as a single linear flow would wrongly imply `AppSt
 
 ```mermaid
 flowchart TD
-    subgraph Setup["🔧 One-time setup"]
-        A(["set awsAccountId in infra/config/app-config.ts<br/>(devConfig & prodConfig)"])
+    subgraph Setup["🔧 One-time setup (per repo copy)"]
+        A(["set githubRepo & awsAccountId<br/>in infra/config/app-config.ts<br/>(devConfig & prodConfig)"])
     end
 
     A -.->|"done once, then whenever InfraStack changes"| C["export AWS_PROFILE=bms<br/>(or SSO login) — manual, every session"]

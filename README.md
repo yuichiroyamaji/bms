@@ -233,11 +233,11 @@ When using this repository as a template for a new project, update the following
 
 ### 1. GitHub Repository Configuration
 
-**File:** `infra/bin/app.ts`
+**File:** `infra/config/app-config.ts`
 
 ```typescript
-// Line 23: Update with your GitHub repository name
-githubRepo: 'your-username/your-repo-name',
+// Update with your GitHub repository name
+export const githubRepo = 'your-username/your-repo-name';
 ```
 
 **File:** `.github/workflows/deploy.yml`
@@ -271,13 +271,14 @@ stackName: `your-project-app-${environment}`,
 **File:** `infra/config/app-config.ts`
 
 ```typescript
-// Lines 36 & 54: Update email for CloudWatch alarms
+// Update email for CloudWatch alarms (both devConfig & prodConfig)
 alarmEmail: 'your-email@example.com',
 
-// Lines 34 & 52: Add custom domain (optional)
-customDomain: 'admin.yourdomain.com',
+// Add a custom domain (optional) — requires an ACM cert in us-east-1
+domainNames: ['admin.yourdomain.com'],
+certificateArn: 'arn:aws:acm:us-east-1:...',
 
-// Lines 41-45 & 59-61: Add environment variables
+// Add environment variables
 environmentVariables: {
   DATABASE_URL: 'your-database-url',
   API_KEY: 'your-api-key',
@@ -308,7 +309,7 @@ After deploying InfraStack, set these secrets in your GitHub repository:
 
 ### Quick Setup Checklist
 
-- [ ] Update GitHub repository name in `infra/bin/app.ts`
+- [ ] Update GitHub repository name in `infra/config/app-config.ts`
 - [ ] Update stack names in `infra/bin/app.ts` (2 places)
 - [ ] Update stack name in `.github/workflows/deploy.yml`
 - [ ] Update email in `infra/config/app-config.ts` (2 places: dev & prod)

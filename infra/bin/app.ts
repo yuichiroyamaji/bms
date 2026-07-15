@@ -3,7 +3,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import { InfraStack } from '../lib/stacks/infra-stack';
 import { AppStack } from '../lib/stacks/app-stack';
 import { MonitoringStack } from '../lib/stacks/monitoring-stack';
-import { getConfig } from '../config/app-config';
+import { getConfig, githubRepo } from '../config/app-config';
 
 const app = new cdk.App();
 
@@ -32,9 +32,6 @@ const env = {
   account: config.awsAccountId,
   region: config.awsRegion || process.env.CDK_DEFAULT_REGION,
 };
-
-// GitHub repository for CI/CD OIDC trust policy - UPDATE THIS when copying this repo for a new project
-const githubRepo = 'yuichiroyamaji/bms';
 
 // Infrastructure stack (databases, caching, etc.)
 new InfraStack(app, `InfraStack-${environment}`, {
