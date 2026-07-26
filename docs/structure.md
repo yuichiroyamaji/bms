@@ -58,8 +58,11 @@ infra/
 ├── CLAUDE.md                      # cdk / OpenNext commands + layout
 └── docs/
     ├── deployment.md              # current OpenNext deploy guide
+    ├── troubleshooting.md         # symptom → cause → fix for the OpenNext stack
+    ├── test-plan.md
     ├── migration-plan.md          # AppRunner → OpenNext history
     ├── aws-infrastructure-diagram.md
+    ├── reference/migration-plan.md
     ├── assets/aws_diagram.drawio
     └── _archive-apprunner/        # retired AppRunner docs (obsolete; do not follow)
 
