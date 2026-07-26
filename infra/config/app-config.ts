@@ -42,6 +42,21 @@ export interface AppConfig {
  */
 export const githubRepo = 'yuichiroyamaji/bms';
 
+/**
+ * Prefix for every physical resource name that is unique per AWS account:
+ * CloudFormation stack names and the CI/CD IAM role.
+ *
+ * This exists because more than one project built from this template can share
+ * a single AWS account. Stack names, IAM role names, and CloudFormation export
+ * names are account-scoped, not stack-scoped, so two deployments that use the
+ * same prefix collide — the second one either fails to deploy or, worse,
+ * updates the first one's stacks.
+ *
+ * REPLACE this when copying/forking this repo for a new project, and keep it
+ * distinct from any other project deploying into the same account.
+ */
+export const resourcePrefix = 'bms';
+
 export const devConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the dev environment
   awsAccountId: '361454773891',

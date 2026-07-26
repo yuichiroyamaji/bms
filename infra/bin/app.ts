@@ -3,7 +3,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import { InfraStack } from '../lib/stacks/infra-stack';
 import { AppStack } from '../lib/stacks/app-stack';
 import { MonitoringStack } from '../lib/stacks/monitoring-stack';
-import { getConfig, githubRepo } from '../config/app-config';
+import { getConfig, githubRepo, resourcePrefix } from '../config/app-config';
 
 const app = new cdk.App();
 
@@ -36,14 +36,14 @@ const env = {
 // Infrastructure stack (databases, caching, etc.)
 new InfraStack(app, `InfraStack-${environment}`, {
   env,
-  stackName: `admin-infra-${environment}`,
+  stackName: `${resourcePrefix}-infra-${environment}`,
   githubRepo,
 });
 
 // OpenNext stack for the Next.js frontend (CloudFront + Lambda + S3)
 const appStack = new AppStack(app, `AppStack-${environment}`, {
   env,
-  stackName: `admin-app-${environment}`,
+  stackName: `${resourcePrefix}-app-${environment}`,
   crossRegionReferences: true,
   ...config,
 });
@@ -56,7 +56,7 @@ if (config.alarmEmail) {
       account: config.awsAccountId,
       region: 'us-east-1',
     },
-    stackName: `admin-monitoring-${environment}`,
+    stackName: `${resourcePrefix}-monitoring-${environment}`,
     crossRegionReferences: true,
     distributionId: appStack.distributionId,
     alarmEmail: config.alarmEmail,

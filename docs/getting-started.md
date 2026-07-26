@@ -9,6 +9,7 @@ template at your own AWS accounts and GitHub repo:
 
 ```typescript
 export const githubRepo = 'my-org/my-repo';
+export const resourcePrefix = 'myapp';
 
 export const devConfig: AppConfig = {
   awsAccountId: '111111111111',
@@ -30,6 +31,15 @@ export const prodConfig: AppConfig = {
 - **`githubRepo`** — your GitHub repo in `owner/repo` format. Scopes the OIDC trust policy for
   the CI/CD deploy role (`infra/lib/constructs/github-oidc-role.ts`) — GitHub Actions in a
   differently named repo can't assume the role until this matches.
+- **`resourcePrefix`** — **Required if more than one project from this template shares an AWS
+  account.** Prefixes every physical name that is scoped to the *account* rather than the stack:
+  the three CloudFormation stack names (`<prefix>-infra-<env>`, `<prefix>-app-<env>`,
+  `<prefix>-monitoring-<env>`) and the CI/CD IAM role (`<prefix>-github-oidc-deploy-role`). Leave
+  two deployments on the same prefix and the second doesn't just fail — it **updates the first
+  one's stacks**, because CDK matches deployments by stack name. Related account-global resources
+  that this prefix does *not* cover, but that also can't be duplicated: the GitHub OIDC provider
+  (imported, not created) and CloudFormation export names (this template deliberately declares
+  none).
 - **`alarmEmail`** (optional) — email that receives CloudWatch alarm notifications. Setting it
   also deploys `MonitoringStack-<env>` alongside `AppStack-<env>` (see comment on the field).
 - `domainNames`, `certificateArn`, `awsRegion`, `environmentVariables`, `serverMemoryMb`,
