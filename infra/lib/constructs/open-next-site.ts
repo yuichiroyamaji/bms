@@ -211,7 +211,18 @@ export class OpenNextSite extends Construct {
     const serverOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(serverFnUrl);
     const imageOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(imageFnUrl);
 
-    const allViewerExceptHost = cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER;
+    // Forward all viewer headers to the Lambda origins EXCEPT `host` and `authorization`.
+    // `host` must be the origin's own host for SigV4 (as the managed AllViewerExceptHostHeader
+    // policy also does). `authorization` must be excluded too: OAC carries its SigV4 signature
+    // in the Authorization header, and CloudFront will NOT add that signature if the origin
+    // request policy already forwards a viewer Authorization header — leaving the request
+    // unsigned, which the AWS_IAM function URL then rejects with 403 AccessDenied.
+    const lambdaOriginRequestPolicy = new cloudfront.OriginRequestPolicy(this, 'ServerOriginRequestPolicy', {
+      comment: 'All viewer headers except host + authorization (authorization would suppress OAC signing)',
+      headerBehavior: cloudfront.OriginRequestHeaderBehavior.denyList('host', 'authorization'),
+      queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+      cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+    });
     const cachingOptimized = cloudfront.CachePolicy.CACHING_OPTIMIZED;
 
     // Server cache policy: honors Next.js cache-control headers, varies on RSC headers.
@@ -246,7 +257,7 @@ export class OpenNextSite extends Construct {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachePolicy: serverCachePolicy,
-        originRequestPolicy: allViewerExceptHost,
+        originRequestPolicy: lambdaOriginRequestPolicy,
         compress: true,
       },
       additionalBehaviors: {
@@ -254,7 +265,7 @@ export class OpenNextSite extends Construct {
           origin: imageOrigin,
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cachingOptimized,
-          originRequestPolicy: allViewerExceptHost,
+          originRequestPolicy: lambdaOriginRequestPolicy,
           compress: true,
         },
         '_next/data/*': {
@@ -262,7 +273,7 @@ export class OpenNextSite extends Construct {
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           cachePolicy: serverCachePolicy,
-          originRequestPolicy: allViewerExceptHost,
+          originRequestPolicy: lambdaOriginRequestPolicy,
           compress: true,
         },
         '_next/*': s3Behavior,
