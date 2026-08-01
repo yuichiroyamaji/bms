@@ -187,6 +187,9 @@ export class OpenNextSite extends Construct {
       },
     });
     tagCacheTable.grantReadWriteData(initFunction);
+    // Do NOT use AwsCustomResourcePolicy.fromSdkCalls here — it maps SDK action
+    // `invoke` to IAM `lambda:Invoke`, which is not a real action. Lambda requires
+    // `lambda:InvokeFunction` (documented exception in AwsCustomResourcePolicy).
     new cr.AwsCustomResource(this, 'InitInvoker', {
       onUpdate: {
         service: 'Lambda',
@@ -197,9 +200,13 @@ export class OpenNextSite extends Construct {
         },
         physicalResourceId: cr.PhysicalResourceId.of(`${stack.stackName}-init`),
       },
-      policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
-        resources: [initFunction.functionArn],
-      }),
+      policy: cr.AwsCustomResourcePolicy.fromStatements([
+        new iam.PolicyStatement({
+          actions: ['lambda:InvokeFunction'],
+          resources: [initFunction.functionArn],
+        }),
+      ]),
+      installLatestAwsSdk: false,
     });
 
     // ---------- CloudFront ----------
