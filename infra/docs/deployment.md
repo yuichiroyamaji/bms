@@ -48,8 +48,21 @@ export const devConfig: AppConfig = {
 ```bash
 cd infra
 npm install
-npx cdk bootstrap
+npx cdk bootstrap -c environment=dev
 ```
+
+> **Bootstrap us-east-1 as well if `alarmEmail` is set.** `MonitoringStack` always deploys to
+> **us-east-1**, regardless of `awsRegion` — CloudFront publishes its metrics only there, so
+> the 5xx alarm has to live there. Missing this doesn't fail until the deploy is already
+> underway, with
+> `SSM parameter /cdk-bootstrap/hnb659fds/version not found. Has the environment been bootstrapped?`
+>
+> ```bash
+> npx cdk bootstrap aws://<account-id>/us-east-1 -c environment=dev
+> ```
+>
+> Note `-c environment=dev` is required even for `bootstrap`: every CDK command loads
+> `app.js`, which needs to know which environment's account to target.
 
 ### Step 4: Preview Changes (Optional)
 
@@ -245,6 +258,10 @@ CDK will:
 4. Invalidate CloudFront cache for changed paths
 
 ## Troubleshooting
+
+**→ See [troubleshooting.md](./troubleshooting.md) for the full symptom-driven guide**, covering
+CloudFront 403s on SSR routes, missing bootstrap regions, absent OpenNext bundles, sticky
+`UPDATE_ROLLBACK_COMPLETE` statuses, cross-project name collisions, and diagnostic commands.
 
 > Note: the older `_archive-apprunner/troubleshooting.md` covers the retired AppRunner setup and no longer applies to this OpenNext deployment.
 

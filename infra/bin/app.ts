@@ -2,7 +2,8 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { InfraStack } from '../lib/stacks/infra-stack';
 import { AppStack } from '../lib/stacks/app-stack';
-import { getConfig } from '../config/app-config';
+import { MonitoringStack } from '../lib/stacks/monitoring-stack';
+import { getConfig, githubRepo, resourcePrefix } from '../config/app-config';
 
 const app = new cdk.App();
 
@@ -32,19 +33,33 @@ const env = {
   region: config.awsRegion || process.env.CDK_DEFAULT_REGION,
 };
 
-// GitHub repository for CI/CD OIDC trust policy - UPDATE THIS when copying this repo for a new project
-const githubRepo = 'yuichiroyamaji/bms';
-
 // Infrastructure stack (databases, caching, etc.)
 new InfraStack(app, `InfraStack-${environment}`, {
   env,
-  stackName: `admin-infra-${environment}`,
+  stackName: `${resourcePrefix}-infra-${environment}`,
   githubRepo,
 });
 
 // OpenNext stack for the Next.js frontend (CloudFront + Lambda + S3)
-new AppStack(app, `AppStack-${environment}`, {
+const appStack = new AppStack(app, `AppStack-${environment}`, {
   env,
-  stackName: `admin-app-${environment}`,
+  stackName: `${resourcePrefix}-app-${environment}`,
+  crossRegionReferences: true,
   ...config,
 });
+
+// CloudFront's 5xx alarm must live in us-east-1, where CloudFront publishes
+// its CloudWatch metrics — AppStack itself can deploy to any region.
+if (config.alarmEmail) {
+  const monitoringStack = new MonitoringStack(app, `MonitoringStack-${environment}`, {
+    env: {
+      account: config.awsAccountId,
+      region: 'us-east-1',
+    },
+    stackName: `${resourcePrefix}-monitoring-${environment}`,
+    crossRegionReferences: true,
+    distributionId: appStack.distributionId,
+    alarmEmail: config.alarmEmail,
+  });
+  monitoringStack.addDependency(appStack);
+}

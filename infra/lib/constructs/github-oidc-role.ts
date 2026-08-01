@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
+import { resourcePrefix } from '../../config/app-config';
 
 export interface GitHubOidcRoleProps {
   /**
@@ -24,17 +25,17 @@ export class GitHubOidcRole extends Construct {
 
     const branches = props.branches || ['main', 'develop'];
 
-    // Create OIDC provider for GitHub Actions
-    // Note: GitHub's OIDC provider thumbprints are updated periodically
-    // Current thumbprints as of 2024 (GitHub uses multiple certificates)
-    const githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
-      url: 'https://token.actions.githubusercontent.com',
-      clientIds: ['sts.amazonaws.com'],
-      thumbprints: [
-        '6938fd4d98bab03faadb97b34396831e3780aea1',
-        '1c58a3a8518e8759bf075b76b750d4f2df264fcd'
-      ],
-    });
+    // Import the account-wide GitHub Actions OIDC provider rather than creating one.
+    // GitHub's provider (token.actions.githubusercontent.com) is account-global — only
+    // one can exist per AWS account, so if any other project in this account already
+    // created it, `new iam.OpenIdConnectProvider(...)` fails with EntityAlreadyExists.
+    // Importing is safe either way, but it does mean the provider must already exist;
+    // see docs/getting-started.md for creating it on a genuinely fresh account.
+    const githubProvider = iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(
+      this,
+      'GitHubProvider',
+      `arn:aws:iam::${cdk.Stack.of(this).account}:oidc-provider/token.actions.githubusercontent.com`
+    );
 
     // Build trust policy conditions
     // The 'sub' claim format from GitHub can be:
@@ -53,10 +54,11 @@ export class GitHubOidcRole extends Construct {
       },
     };
 
-    // Create IAM role that GitHub Actions can assume
-    // Note: Role name doesn't include 'github' to avoid potential issues
+    // Create IAM role that GitHub Actions can assume.
+    // IAM role names are account-global, so this is prefixed to stay isolated from
+    // other projects built from this template deploying into the same account.
     this.role = new iam.Role(this, 'GitHubActionsRole', {
-      roleName: 'github-oidc-deploy-role',
+      roleName: `${resourcePrefix}-github-oidc-deploy-role`,
       assumedBy: new iam.FederatedPrincipal(
         githubProvider.openIdConnectProviderArn,
         trustPolicyConditions,
@@ -92,11 +94,15 @@ export class GitHubOidcRole extends Construct {
       })
     );
 
-    // Output the role ARN
+    // Output the role ARN, deliberately WITHOUT an exportName. CloudFormation export
+    // names are unique per account/region, so a fixed 'GitHubActionsRoleArn' export
+    // collides with any other project from this template in the same account — the
+    // deploy is then rejected up front with "Export with name ... is already exported
+    // by stack ...". Nothing consumes this via Fn::ImportValue, so a plain output is
+    // enough; the ARN is read from the stack outputs when wiring up GitHub secrets.
     new cdk.CfnOutput(this, 'GitHubActionsRoleArn', {
       value: this.role.roleArn,
       description: 'IAM Role ARN for GitHub Actions',
-      exportName: 'GitHubActionsRoleArn',
     });
   }
 }

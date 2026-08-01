@@ -7,6 +7,8 @@ Infrastructure as code for deploying the Next.js app to AWS via **OpenNext
 
 @docs/deployment.md
 
+- **Something broken? → `docs/troubleshooting.md`** (symptom-driven: CloudFront 403s, bootstrap
+  regions, missing OpenNext bundle, stuck stack statuses, cross-project name collisions)
 - First deploy / AWS account setup: `../docs/getting-started.md`
 - Deployment flow diagrams: `../docs/deployment-flows.md`
 - Migration history (AppRunner → OpenNext): `docs/migration-plan.md`

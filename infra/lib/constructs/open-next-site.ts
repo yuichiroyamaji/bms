@@ -12,6 +12,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as cr from 'aws-cdk-lib/custom-resources';
 
 export interface OpenNextSiteProps {
@@ -115,8 +116,11 @@ export class OpenNextSite extends Construct {
     tagCacheTable.grantReadWriteData(this.serverFunction);
     revalidationQueue.grantSendMessages(this.serverFunction);
 
+    // AWS_IAM (not NONE): CloudFront signs origin requests via OAC (see Distribution
+    // below). Public (NONE) function URLs are rejected in this AWS org, and IAM + OAC
+    // is the AWS-recommended secure pattern — the URL is only reachable via CloudFront.
     const serverFnUrl = this.serverFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
     // ---------- Image-optimization Lambda ----------
@@ -135,7 +139,7 @@ export class OpenNextSite extends Construct {
     this.bucket.grantRead(this.imageFunction, '_assets/*');
 
     const imageFnUrl = this.imageFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
     // ---------- Revalidation Lambda (SQS-triggered) ----------
@@ -202,10 +206,28 @@ export class OpenNextSite extends Construct {
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(this.bucket, {
       originPath: '/_assets',
     });
-    const serverOrigin = new origins.FunctionUrlOrigin(serverFnUrl);
-    const imageOrigin = new origins.FunctionUrlOrigin(imageFnUrl);
+    // OAC-signed origins: CloudFront signs each request with SigV4 so the AWS_IAM
+    // function URLs accept it. withOriginAccessControl also auto-grants CloudFront
+    // lambda:InvokeFunctionUrl scoped to this distribution.
+    const serverOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(serverFnUrl);
+    const imageOrigin = origins.FunctionUrlOrigin.withOriginAccessControl(imageFnUrl);
 
-    const allViewerExceptHost = cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER;
+    // Forward all viewer headers to the Lambda origins EXCEPT `host` and `authorization`.
+    // `host` must be the origin's own host for SigV4, which is what the managed
+    // AllViewerExceptHostHeader policy does; this policy additionally drops
+    // `authorization` so a viewer-supplied credential is never relayed to the origin.
+    //
+    // NOTE: dropping `authorization` is defence-in-depth, NOT a requirement for OAC.
+    // The OAC below uses SigningBehavior `always`, and AWS documents that `always`
+    // overwrites any viewer Authorization header with its own SigV4 signature. Only
+    // `no-override` defers to the viewer's header. Do not attribute OAC 403s to this
+    // setting — the real cause is usually a missing lambda:InvokeFunction grant (below).
+    const lambdaOriginRequestPolicy = new cloudfront.OriginRequestPolicy(this, 'ServerOriginRequestPolicy', {
+      comment: 'All viewer headers except host + authorization',
+      headerBehavior: cloudfront.OriginRequestHeaderBehavior.denyList('host', 'authorization'),
+      queryStringBehavior: cloudfront.OriginRequestQueryStringBehavior.all(),
+      cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+    });
     const cachingOptimized = cloudfront.CachePolicy.CACHING_OPTIMIZED;
 
     // Server cache policy: honors Next.js cache-control headers, varies on RSC headers.
@@ -240,7 +262,7 @@ export class OpenNextSite extends Construct {
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachePolicy: serverCachePolicy,
-        originRequestPolicy: allViewerExceptHost,
+        originRequestPolicy: lambdaOriginRequestPolicy,
         compress: true,
       },
       additionalBehaviors: {
@@ -248,7 +270,7 @@ export class OpenNextSite extends Construct {
           origin: imageOrigin,
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cachingOptimized,
-          originRequestPolicy: allViewerExceptHost,
+          originRequestPolicy: lambdaOriginRequestPolicy,
           compress: true,
         },
         '_next/data/*': {
@@ -256,7 +278,7 @@ export class OpenNextSite extends Construct {
           viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           cachePolicy: serverCachePolicy,
-          originRequestPolicy: allViewerExceptHost,
+          originRequestPolicy: lambdaOriginRequestPolicy,
           compress: true,
         },
         '_next/*': s3Behavior,
@@ -278,6 +300,30 @@ export class OpenNextSite extends Construct {
           }
         : {}),
     });
+
+    // OAC needs TWO permissions on each function URL origin, not one.
+    // `FunctionUrlOrigin.withOriginAccessControl()` auto-grants only
+    // `lambda:InvokeFunctionUrl`; AWS additionally requires `lambda:InvokeFunction`
+    // for the CloudFront service principal. Without it every SSR/image request is
+    // rejected by the function URL with 403 AccessDenied before the function is ever
+    // invoked — which looks exactly like an OAC signing failure and is easy to
+    // misdiagnose as such. See "Restrict access to an AWS Lambda function URL origin":
+    // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-lambda.html
+    //
+    // Declared after the Distribution so `distributionId` is resolvable. This does not
+    // create a cycle: the Distribution depends on the function URLs, and these
+    // permissions depend on the Distribution — the functions never depend back.
+    const distributionArn = `arn:aws:cloudfront::${cdk.Stack.of(this).account}:distribution/${this.distribution.distributionId}`;
+    for (const [id, fn] of [
+      ['ServerFunctionCloudFrontInvoke', this.serverFunction],
+      ['ImageFunctionCloudFrontInvoke', this.imageFunction],
+    ] as const) {
+      fn.addPermission(id, {
+        principal: new iam.ServicePrincipal('cloudfront.amazonaws.com'),
+        action: 'lambda:InvokeFunction',
+        sourceArn: distributionArn,
+      });
+    }
 
     new cdk.CfnOutput(this, 'CloudFrontUrl', {
       value: `https://${this.distribution.distributionDomainName}`,

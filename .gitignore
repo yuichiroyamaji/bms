@@ -23,3 +23,9 @@ backend/logs/*.log.*.*.*.*.*.*.*
 
 # OS files
 .DS_Store
+
+# Claude Code — personal, per-machine settings (permission modes, hooks, local allowlists).
+# Shared team config belongs in .claude/settings.json, which IS tracked.
+# Previously only ignored via a personal global gitignore, so a fresh clone would have
+# offered this file for commit.
+.claude/settings.local.json

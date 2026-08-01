@@ -32,9 +32,34 @@ export interface AppConfig {
   imageMemoryMb?: number;
 }
 
+/**
+ * GitHub repository (format: owner/repo) trusted to assume the CI/CD deploy
+ * role via OIDC — see infra/lib/constructs/github-oidc-role.ts. The trust
+ * policy is scoped to this exact value, so GitHub Actions in a differently
+ * named repo cannot assume the role until this is updated to match.
+ *
+ * REPLACE this when copying/forking this repo for a new project.
+ */
+export const githubRepo = 'yuichiroyamaji/bms';
+
+/**
+ * Prefix for every physical resource name that is unique per AWS account:
+ * CloudFormation stack names and the CI/CD IAM role.
+ *
+ * This exists because more than one project built from this template can share
+ * a single AWS account. Stack names, IAM role names, and CloudFormation export
+ * names are account-scoped, not stack-scoped, so two deployments that use the
+ * same prefix collide — the second one either fails to deploy or, worse,
+ * updates the first one's stacks.
+ *
+ * REPLACE this when copying/forking this repo for a new project, and keep it
+ * distinct from any other project deploying into the same account.
+ */
+export const resourcePrefix = 'bms';
+
 export const devConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the dev environment
-  awsAccountId: 'REPLACE_WITH_DEV_ACCOUNT_ID',
+  awsAccountId: '361454773891',
   // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 1024,
@@ -49,7 +74,7 @@ export const devConfig: AppConfig = {
 
 export const prodConfig: AppConfig = {
   // REPLACE with the actual AWS account ID for the prod environment
-  awsAccountId: 'REPLACE_WITH_PROD_ACCOUNT_ID',
+  awsAccountId: '361454773891',
   // awsRegion: 'ap-northeast-1',
   alarmEmail: 'yuichiroyamaji@hotmail.com',
   serverMemoryMb: 2048,

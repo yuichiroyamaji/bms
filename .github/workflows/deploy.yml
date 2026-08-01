@@ -1,6 +1,6 @@
-name: Deploy to AWS AppRunner
+name: Deploy to AWS (OpenNext)
 
-# This workflow deploys your application to AWS AppRunner
+# This workflow deploys your application to AWS via OpenNext (CloudFront + Lambda + S3)
 #
 # Setup required:
 # 1. Deploy InfraStack: npx cdk deploy InfraStack-dev -c environment=dev
@@ -26,13 +26,13 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to AppRunner
+    name: Deploy to AWS
     runs-on: ubuntu-latest
 
     # Use GitHub Environments for production approval
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
-      url: ${{ steps.deployment.outputs.service_url }}
+      url: ${{ steps.deployment.outputs.site_url }}
 
     permissions:
       id-token: write
@@ -144,7 +144,7 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
-        run: npm run build
+        run: npm run build:open-next
 
       - name: Install infrastructure dependencies
         working-directory: infra
@@ -156,26 +156,26 @@ jobs:
 
       - name: CDK Diff
         working-directory: infra
-        run: npx cdk diff AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }}
+        run: npx cdk diff AppStack-${{ steps.env.outputs.environment }} MonitoringStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }}
 
       - name: Deploy to AWS
         working-directory: infra
-        run: npx cdk deploy AppStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }} --require-approval never
+        run: npx cdk deploy AppStack-${{ steps.env.outputs.environment }} MonitoringStack-${{ steps.env.outputs.environment }} -c environment=${{ steps.env.outputs.environment }} --require-approval never
 
       - name: Get deployment info
         id: deployment
         working-directory: infra
         run: |
-          SERVICE_URL=$(aws cloudformation describe-stacks \
+          SITE_URL=$(aws cloudformation describe-stacks \
             --stack-name admin-app-${{ steps.env.outputs.environment }} \
-            --query 'Stacks[0].Outputs[?OutputKey==`ServiceUrl`].OutputValue' \
+            --query 'Stacks[0].Outputs[?OutputKey==`SiteUrl`].OutputValue' \
             --output text)
-          echo "service_url=$SERVICE_URL" >> $GITHUB_OUTPUT
+          echo "site_url=$SITE_URL" >> $GITHUB_OUTPUT
 
       - name: Deployment summary
         run: |
           echo "## Deployment Successful! 🚀" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Environment:** ${{ steps.env.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Service URL:** ${{ steps.deployment.outputs.service_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Site URL:** ${{ steps.deployment.outputs.site_url }}" >> $GITHUB_STEP_SUMMARY
           echo "**Deployed at:** $(date)" >> $GITHUB_STEP_SUMMARY
