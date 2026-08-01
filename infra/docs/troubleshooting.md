@@ -95,6 +95,37 @@ to CloudFront's principal (i.e. the resource policy). **403** means look further
 
 ---
 
+## Deploy fails: InitInvoker `lambda:InvokeFunction` AccessDenied
+
+**Symptoms**
+
+- `AppStack-*/Site/InitInvoker` CREATE_FAILED during deploy
+- Message like: custom-resource role `… is not authorized to perform: lambda:InvokeFunction`
+  on `…SiteInitFunction…`
+- Rollback may then hit `ROLLBACK_FAILED` if the site S3 bucket is not empty
+
+**Cause**
+
+`AwsCustomResourcePolicy.fromSdkCalls()` translates SDK action `invoke` to IAM
+`lambda:Invoke`, which is **not** a valid action. Lambda requires `lambda:InvokeFunction`.
+CDK documents this as a known exception for `fromSdkCalls`.
+
+**Fix** — already applied in `open-next-site.ts`; keep the explicit statement:
+
+```typescript
+policy: cr.AwsCustomResourcePolicy.fromStatements([
+  new iam.PolicyStatement({
+    actions: ['lambda:InvokeFunction'],
+    resources: [initFunction.functionArn],
+  }),
+]),
+```
+
+**If the stack is already `ROLLBACK_FAILED`:** empty/delete the leftover site bucket, delete
+the stack in CloudFormation, then redeploy.
+
+---
+
 ## CI fails: `SSM parameter /cdk-bootstrap/hnb659fds/version not found`
 
 **Cause** — the target region was never bootstrapped. This bites even when your main region
