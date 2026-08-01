@@ -167,7 +167,7 @@ jobs:
         working-directory: infra
         run: |
           SITE_URL=$(aws cloudformation describe-stacks \
-            --stack-name admin-app-${{ steps.env.outputs.environment }} \
+            --stack-name bms-app-${{ steps.env.outputs.environment }} \
             --query 'Stacks[0].Outputs[?OutputKey==`SiteUrl`].OutputValue' \
             --output text)
           echo "site_url=$SITE_URL" >> $GITHUB_OUTPUT
