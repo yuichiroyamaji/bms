@@ -7,14 +7,13 @@ name: Deploy to AWS (OpenNext)
 # 2. Deploy AppStack-dev: npm run deploy:dev
 # 3. Add GitHub secrets: AWS_ROLE_ARN and AWS_REGION
 # 4. (Optional) Deploy AppStack-prod: npm run deploy:prod
-# 5. (Optional) Uncomment 'main' branch below to enable prod auto-deploy
+# 5. Push to main auto-deploys production (see branches below)
 
 on:
   push:
     branches:
       - develop  # Auto-deploy dev environment
-      # Uncomment the line below to enable auto-deploy to production
-      # - main
+      - main     # Auto-deploy production environment
   workflow_dispatch:
     inputs:
       environment:
