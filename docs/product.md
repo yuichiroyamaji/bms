@@ -1,24 +1,30 @@
 # Product Overview
 
-This is a full-stack admin dashboard application (BMS — Bar Management System) built with
-Next.js and AWS infrastructure. The project consists of three main components:
+**BMS** (Bar Management System) — a full-stack admin dashboard.
 
-## Frontend
-A feature-rich admin dashboard based on TailAdmin, providing UI components for data
-visualization, user management, forms, tables, charts, and authentication. Built with
-Next.js 15 App Router and React Server Components.
+| Domain | What it is |
+|---|---|
+| **Frontend** | TailAdmin-based dashboard: data viz, users, forms, tables, charts, auth UI. Next.js 15 App Router + React Server Components |
+| **Backend** | AWS Lambda functions |
+| **Infra** | AWS CDK (infrastructure as code) |
 
-## Backend
-AWS Lambda functions for serverless backend processing.
+```mermaid
+flowchart LR
+  User --> CF[CloudFront]
+  CF --> S3[S3 static assets]
+  CF --> SSR[Lambda SSR]
+  CF --> Img[Lambda image opt]
+```
 
-## Infrastructure
-AWS CDK-based infrastructure as code (IaC) for deploying the application on AWS.
+## Hosting
 
-## Target Deployment
-The application is deployed on **OpenNext (CloudFront + Lambda + S3)** — a Next.js-specific
-serverless adapter — chosen for full Next.js feature support (SSR, ISR, Middleware, Image
-Optimization), pay-per-request cost (typically < $1 USD/month at low traffic), global CDN
-delivery via CloudFront, and complete IaC management through CDK.
+**OpenNext** — CloudFront + Lambda + S3 (Next.js serverless adapter).
 
-> The project originally targeted AWS AppRunner; see [`../infra/docs/reference/migration-plan.md`](../infra/docs/reference/migration-plan.md)
-> for the rationale behind the move to OpenNext.
+| Why OpenNext | Detail |
+|---|---|
+| Next.js coverage | SSR, ISR, Middleware, Image Optimization |
+| Cost | Pay-per-request; typically &lt; $1 USD/month at low traffic |
+| Delivery | Global CDN via CloudFront |
+| Ops | Fully managed as CDK IaC |
+
+> Originally targeted AWS AppRunner. Rationale for the move: [`../infra/docs/reference/migration-plan.md`](../infra/docs/reference/migration-plan.md)

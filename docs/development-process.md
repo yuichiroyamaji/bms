@@ -1,133 +1,109 @@
-# Development Process — Spec-Driven + Test-Driven Development
+# Development Process — Spec-Driven + Test-Driven
 
-This project combines **Spec-Driven Development (SDD)** and **Test-Driven Development (TDD)**:
-every non-trivial change is specified *and* its tests are defined before it is built. The AI
-agent (Claude Code) drafts each artifact; a human approves at defined gates before the next
-phase begins. This keeps AI-written code aligned with intent and verifiable.
+Every non-trivial change is **specified and tested before it is built**.
 
-## TL;DR
+- AI drafts each artifact.
+- A human **approves at each gate**. AI does not skip ahead.
 
+```mermaid
+flowchart LR
+  Idea --> Issue
+  Issue --> R["requirements.md"]
+  R -->|Gate 1| D["design.md"]
+  D -->|Gate 2| T["test-cases.md"]
+  T -->|Gate 3| P["tasks.md"]
+  P -->|Gate 4| Code
+  Code -->|TDD red→green→refactor| Merge
 ```
-Idea ─▶ Issue ─▶ requirements.md ─▶ design.md ─▶ test-cases.md ─▶ tasks.md ─▶ code ─▶ merge
-                  └─ GATE 1 ──┘    └ GATE 2 ┘   └─ GATE 3 ──┘    └ GATE 4 ┘   TDD: red→green→refactor
-```
 
-- Spec + test cases live **in the repo**, next to the code they describe.
-- **GitHub Issues** track execution (epic + sub-issues).
-- **Notion** tracks portfolio/roadmap only — not individual work items.
+| Source of truth | Lives in |
+|---|---|
+| Spec + test cases | **Repo**, next to the code |
+| Execution (epic / sub-issues) | **GitHub Issues** |
+| Portfolio / roadmap | **Notion** only — not work items |
 
-## The unit of work: 4 documents
-
-Every feature/initiative is specified by these four files (the "spec set"):
+## Spec set (4 files)
 
 | File | Phase | Purpose |
 |---|---|---|
-| `requirements.md` | 1 | WHAT & WHY — user stories + EARS acceptance criteria |
+| `requirements.md` | 1 | WHAT & WHY — user stories + EARS |
 | `design.md` | 2 | HOW — architecture, data model, decisions |
-| `test-cases.md` | 3 | PROOF — tests (Given/When/Then) mapped to each acceptance criterion |
-| `tasks.md` | 4 | THE PLAN — ordered checklist → requirement & test ids |
+| `test-cases.md` | 3 | PROOF — Given/When/Then mapped to each criterion |
+| `tasks.md` | 4 | PLAN — ordered checklist → Req & TC ids |
 
 ## Roles
 
-| Actor | Responsibility |
+| Actor | Does |
 |---|---|
-| **Human** | Approves each gate, makes product/architecture calls, reviews PRs |
-| **AI (Claude Code)** | Drafts the spec set, implements tasks test-first, opens PRs, self-verifies |
+| **Human** | Approves gates, product/architecture calls, reviews PRs |
+| **AI (Claude Code)** | Drafts spec set, implements test-first, opens PRs, self-verifies |
 
-The AI **stops at each gate** and waits for explicit approval. It does not skip ahead.
+## Phases
 
-## The phases
+| Phase | Artifact | Gate | Contents |
+|---|---|---|---|
+| **0 Intake** | GitHub Issue | — | The ask. Feature Request or Bug. No solution yet. |
+| **1 Requirements** | `requirements.md` | **Gate 1** | Glossary; user stories (`As a … I want … so that …`); EARS (`WHEN … THE system SHALL …`) |
+| **2 Design** | `design.md` | **Gate 2** | Architecture, components, data model/contracts, sequence diagrams, decisions + rejected alternatives, Req ids |
+| **3 Test cases** | `test-cases.md` | **Gate 3** | Given/When/Then; cites `Req 1.1`; happy/edge/error; every criterion has ≥1 test |
+| **4 Tasks** | `tasks.md` | **Gate 4** | One-PR-sized steps; cites `(Req 1.2 · TC-2)`; large ones → GitHub sub-issues |
+| **5 Implement** | code + tests | — | TDD loop (below) |
+| **6 Verify** | PR merge | — | Review, merge, issue closes, tick `tasks.md`. Update specs if reality changed. |
 
-### Phase 0 — Intake
-A need is captured as a **GitHub Issue** (Feature Request or Bug). The "ask"; no solution yet.
+**TDD loop (Phase 5)**
 
-### Phase 1 — Requirements → `requirements.md`  ·  **GATE 1**
-Defines **WHAT & WHY** with EARS acceptance criteria.
-- Introduction, glossary
-- User stories: _As a `<role>`, I want `<capability>`, so that `<benefit>`._
-- Acceptance criteria: `WHEN <trigger>, THE <system> SHALL <response>` (+ `WHERE` / `IF`)
+1. **Red** — write the test(s) from `test-cases.md`; they fail.
+2. **Green** — minimum code to pass.
+3. **Refactor** — keep tests green.
 
-> **Gate 1:** human approves requirements before design.
+- One task → one branch → one PR ([`git-flow.md`](./git-flow.md)).
+- PR links the spec and `Closes #<issue>`.
+- Tests live with the code (Jest units, Playwright E2E).
 
-### Phase 2 — Design → `design.md`  ·  **GATE 2**
-Defines **HOW**: architecture, component breakdown, data model / contracts, sequence
-diagrams, key decisions & rejected alternatives, mapped back to requirement ids.
+## Where files live
 
-> **Gate 2:** human approves design before test cases.
+Always named `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
 
-### Phase 3 — Test Cases → `test-cases.md`  ·  **GATE 3**
-Defines the **tests that prove the requirements** — this is what makes the work test-driven.
-- Each test case cites the acceptance criterion it verifies (`Req 1.1`)
-- Covers happy path, edge cases, error handling
-- Includes a coverage check: every acceptance criterion → at least one test case
+| Scope | Path |
+|---|---|
+| One feature | `<domain>/src/features/<feature>/docs/` e.g. `frontend/src/features/engineers/docs/` |
+| Cross-cutting | `docs/specs/<initiative>/` |
 
-> **Gate 3:** human approves the test cases before planning implementation.
+- Templates: [`specs/_template/`](./specs/_template/)
+- Fastest: `/new-feature <name>` in Claude Code
 
-### Phase 4 — Tasks → `tasks.md`  ·  **GATE 4**
-Ordered, checkable implementation steps. Each task is small enough for one PR and cites the
-requirement and test ids it covers (e.g. `(Req 1.2 · TC-2)`). Substantial tasks become GitHub
-**sub-issues**.
-
-> **Gate 4:** human approves the plan before implementation starts.
-
-### Phase 5 — Implementation (TDD loop)
-For each task, follow **red → green → refactor**:
-1. **Red** — write the automated test(s) from `test-cases.md` first; watch them fail.
-2. **Green** — write the minimum code to make them pass.
-3. **Refactor** — clean up with tests staying green.
-
-One task → one branch → one PR (GitFlow, see [`git-flow.md`](./git-flow.md)). PR references the
-spec and `Closes #<issue>`. Tests live with the code (Jest units, Playwright E2E).
-
-### Phase 6 — Verify & Done
-PR reviewed and merged; issue auto-closes; `tasks.md` checkbox ticked; epic updates. Specs and
-test cases are updated if implementation revealed changes (they are living docs).
-
-## File naming & location (the rule)
-
-Spec files are **always** named `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
-
-Location follows the repo's locality rule (see [`structure.md`](./structure.md)):
-
-- **Feature-scoped** → `<domain>/src/features/<feature>/docs/`
-  (e.g. `frontend/src/features/engineers/docs/`)
-- **Cross-cutting initiative** (spans domains) → `docs/specs/<initiative>/`
-
-Skeletons to copy from: [`specs/_template/`](./specs/_template/). Fastest path: run
-`/new-feature <name>` in Claude Code.
-
-## GitHub Issues mapping (hybrid model)
+## GitHub mapping
 
 | Artifact | GitHub | Label |
 |---|---|---|
-| A feature/initiative | **Spec issue** (epic) — links the spec set, tracks gates as checkboxes | `spec` |
-| A substantial task in `tasks.md` | **Task sub-issue** — cites requirement & test ids | `task` |
-| A small task | Just a checkbox in `tasks.md` | — |
-| A defect | **Bug** issue | `bug` |
+| Feature / initiative | Spec issue (epic) — links spec set, gate checkboxes | `spec` |
+| Substantial `tasks.md` item | Task sub-issue — cites Req & TC ids | `task` |
+| Small task | Checkbox in `tasks.md` only | — |
+| Defect | Bug issue | `bug` |
 
-Phase labels track progress: `phase:requirements`, `phase:design`, `phase:test-cases`,
-`phase:tasks`, `phase:implementation`.
+**Phase labels:** `phase:requirements` · `phase:design` · `phase:test-cases` · `phase:tasks` · `phase:implementation`
 
-**Branch & PR conventions**
-- Branch: `feature/<issue#>-<short-slug>` (or `fix/<issue#>-…`), per GitFlow
-- PR body links the spec and `Closes #<issue>`; closing sub-issues updates the epic checklist
+**Branch / PR**
 
-## Authority — who owns what (avoids triple-tracking)
+- Branch: `feature/<issue#>-<short-slug>` (or `fix/<issue#>-…`)
+- PR body: link spec + `Closes #<issue>` (closing a sub-issue updates the epic)
 
-| Source of truth for… | Lives in |
+## Authority
+
+| For… | Owner |
 |---|---|
-| Requirements, design, test cases, task breakdown | **Repo spec set** (versioned with code) |
+| Requirements, design, tests, task breakdown | **Repo spec set** |
 | Execution & code review | **GitHub Issues / PRs** |
-| Portfolio status & roadmap | **Notion** (project level only) |
+| Portfolio & roadmap | **Notion** (project level) |
 
-## Starting a new spec
+## Start a spec
 
-1. `/new-feature <name>` (Claude Code) scaffolds the spec set from `docs/specs/_template/`,
-   opens the Spec (epic) issue, and starts Phase 1.
-2. Or manually: copy `docs/specs/_template/` to the location and open a Spec issue from the
-   **📋 Spec / Epic** template.
+1. `/new-feature <name>` — scaffolds from `docs/specs/_template/`, opens the Spec epic, starts Phase 1.
+2. Or copy `docs/specs/_template/` and open **📋 Spec / Epic**.
 
-## References
-- Repo & docs layout: [`structure.md`](./structure.md)
+## See also
+
+- Quick start: [`new-feature-workflow.md`](./new-feature-workflow.md)
+- Layout: [`structure.md`](./structure.md)
 - Branching: [`git-flow.md`](./git-flow.md)
-- AI-coding setup record: [`ai-coding-transformation.md`](./ai-coding-transformation.md)
+- AI-coding record: [`ai-coding-transformation.md`](./ai-coding-transformation.md)

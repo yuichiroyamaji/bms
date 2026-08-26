@@ -1,18 +1,18 @@
 # Repository Structure (monorepo)
 
-This repo is a monorepo with three deployable domains plus shared documentation.
+Three deployable domains + shared docs.
 
 ```
 /
 ├── frontend/   # Next.js application (see frontend/docs/)
 ├── backend/    # AWS Lambda functions (see backend/docs/)
-├── infra/      # AWS CDK infrastructure as code (see infra/docs/)
+├── infra/      # AWS CDK → OpenNext (see infra/docs/)
 └── docs/       # Project-wide documentation
 ```
 
 ## Documentation policy
 
-Docs live at the **narrowest scope that fully contains their subject**:
+Put a doc at the **narrowest scope that fully contains its subject**.
 
 | Scope | Location | Examples |
 |---|---|---|
@@ -20,9 +20,16 @@ Docs live at the **narrowest scope that fully contains their subject**:
 | One domain | `<domain>/docs/` | `frontend/docs/conventions.md`, `infra/docs/deployment.md` |
 | One feature | `<domain>/src/features/<feature>/docs/` | `frontend/src/features/engineers/docs/` |
 
-Each domain has its own `CLAUDE.md` that Claude Code auto-loads when working in that
-subtree; it imports the relevant docs. Feature specs use the filenames
-`requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
+```mermaid
+flowchart TD
+  Q{"Who needs this doc?"}
+  Q -->|Whole repo| P["docs/"]
+  Q -->|One domain only| D["frontend/docs, backend/docs, infra/docs"]
+  Q -->|One feature only| F["domain/src/features/&lt;feature&gt;/docs/"]
+```
+
+- Each domain has a `CLAUDE.md` auto-loaded in that subtree; it `@import`s the relevant docs.
+- Feature spec filenames are always: `requirements.md`, `design.md`, `test-cases.md`, `tasks.md`.
 
 ## Documentation map
 
@@ -32,50 +39,52 @@ docs/                              # PROJECT-WIDE
 ├── product.md                     # what the product is
 ├── tech-stack.md                  # stack, hosting rationale, dev tools, install notes
 ├── structure.md                   # this file: repo layout + doc policy + this map
-├── development-process.md         # Spec-Driven + Test-Driven workflow (phases, gates, GitHub mapping)
-├── getting-started.md             # first-deploy steps: AWS account pinning, InfraStack/AppStack, GitHub OIDC secrets
-├── deployment-flows.md            # diagrams of manual + CI deploy flows, incl. the account-pinning guard
+├── development-process.md         # Spec-Driven + Test-Driven workflow
+├── new-feature-workflow.md        # quick start: /new-feature → gates → PR
+├── getting-started.md             # first-deploy: config, bootstrap, InfraStack, CI secrets
+├── deployment-flows.md            # mermaid: manual + CI deploys
 ├── git-flow.md                    # branching strategy
 ├── todo.md                        # project backlog
-├── ai-coding-transformation.md    # record of the AI-coding conversion + next agenda
+├── ai-coding-transformation.md    # AI-coding conversion record + next agenda
 ├── specs/                         # cross-cutting (multi-domain) specs
-│   ├── _template/                 # requirements/design/test-cases/tasks skeletons to copy
+│   ├── _template/
 │   └── <initiative>/{requirements,design,test-cases,tasks}.md
-└── assets/                        # diagrams & images (requirements.drawio, images/)
+└── assets/                        # diagrams & images
 
 frontend/
-├── CLAUDE.md                      # commands + key conventions (auto-loaded in this subtree)
+├── CLAUDE.md
 ├── docs/
-│   ├── conventions.md             # coding conventions (canonical)
-│   ├── structure.md               # frontend src/ layout
+│   ├── conventions.md
+│   ├── structure.md
+│   ├── test-plan.md
 │   ├── nextjs/{app-router,server-actions}.md
 │   ├── lib-setup/{biome,jest,pino,prisma}.md
 │   └── ui-template/tailadmin-readme.md
-└── src/features/<feature>/docs/   # FEATURE scope
+└── src/features/<feature>/docs/
     └── requirements.md  design.md  test-cases.md  tasks.md
 
 infra/
-├── CLAUDE.md                      # cdk / OpenNext commands + layout
+├── CLAUDE.md
 └── docs/
-    ├── deployment.md              # current OpenNext deploy guide
-    ├── troubleshooting.md         # symptom → cause → fix for the OpenNext stack
+    ├── deployment.md
+    ├── troubleshooting.md
     ├── test-plan.md
-    ├── migration-plan.md          # AppRunner → OpenNext history
+    ├── migration-plan.md
     ├── aws-infrastructure-diagram.md
     ├── reference/migration-plan.md
     ├── assets/aws_diagram.drawio
-    └── _archive-apprunner/        # retired AppRunner docs (obsolete; do not follow)
+    └── _archive-apprunner/        # obsolete — do not follow
 
 backend/
 ├── CLAUDE.md
-└── docs/                          # backend docs (grows with the codebase)
+└── docs/
+    └── test-plan.md
 ```
 
-## Domain structure details
+## Domain details
 
-- **Frontend** — see [`../frontend/docs/structure.md`](../frontend/docs/structure.md)
-- **Infrastructure** — see [`../infra/docs/deployment.md`](../infra/docs/deployment.md)
-
-## Naming conventions
-Frontend file/folder naming conventions are documented in
-[`../frontend/docs/conventions.md`](../frontend/docs/conventions.md).
+| Domain | See |
+|---|---|
+| Frontend | [`../frontend/docs/structure.md`](../frontend/docs/structure.md) |
+| Infra | [`../infra/docs/deployment.md`](../infra/docs/deployment.md) |
+| Frontend naming | [`../frontend/docs/conventions.md`](../frontend/docs/conventions.md) |

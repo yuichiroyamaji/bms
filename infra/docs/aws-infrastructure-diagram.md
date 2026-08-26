@@ -72,10 +72,10 @@ graph TB
     GitHubActionsRole -->|Deploy via CDK| InfraStack
 
     %% Styling
-    classDef external fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef appstack fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef monitoring fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef infrastack fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef external fill:#e1f5ff,stroke:#01579b,stroke-width:2px,color:#01344d
+    classDef appstack fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#5c2400
+    classDef monitoring fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#3b0d52
+    classDef infrastack fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#10401b
 
     class Users,GitHub,Developer external
     class CloudFront,S3Assets,LambdaServer,LambdaImage,CFFunction,S3Cache,SQS,LambdaRevalidate appstack
